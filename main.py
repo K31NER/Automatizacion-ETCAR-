@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from db.db_config import create_tables
 from routers import render,reportes,usuarios
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI(title="MVP - Automatizacion ETCAR", 
             description="Proeycto de automatizacion",
