@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Mantenimiento - ETCAR</title>
+    <link rel="icon" href="/static/img/logo.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         @media (max-width: 400px) {
@@ -29,8 +30,10 @@
 <body class="bg-green-50">
     <div class="container mx-auto p-4 lg:p-8 max-w-4xl 2xl:max-w-6xl">
         <header class="mb-8 text-center space-y-4">
-            <h1 class="text-2xl lg:text-3xl font-bold text-green-800">HOJA DE VIDA MAQUINARIAS</h1>
-            <p class="text-green-600 responsive-text">Registro de Mantenimiento - ETCAR</p>
+            <h1 class="text-2xl lg:text-3xl font-bold text-green-800">REPORTE MAQUINARIAS</h1>
+            <div class="flex justify-center">
+                <img src="/static/img/logo.png" alt="Logo ETCAR" class="w-20 h-20">
+            </div>
         </header>
 
         <form id="maintenanceForm" class="bg-white p-4 sm:p-6 lg:p-8 rounded-xl shadow-2xl space-y-6">
@@ -75,14 +78,6 @@
                             <option value="Instalación">Instalación</option>
                             <option value="Revisión">Revisión</option>
                         </select>
-                    </div>
-
-                    <!-- Responsable -->
-                    <div class="space-y-1">
-                        <label for="responsable" class="block text-sm font-medium text-green-700">Responsable</label>
-                        <input type="text" id="responsable" name="responsable" required
-                            class="w-full px-3 py-2 border-2 border-green-100 rounded-lg focus:ring-2 focus:ring-green-500"
-                            placeholder="Nombre completo">
                     </div>
                 </div>
             </div>

@@ -4,9 +4,9 @@ from fastapi import APIRouter,Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-template = Jinja2Templates(directory="templates")
-
 router = APIRouter(tags=["Renderizado de html"])
+
+template = Jinja2Templates(directory="templates")
 
 @router.get("/",response_class=HTMLResponse)
 async def login(request:Request):
