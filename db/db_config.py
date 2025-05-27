@@ -14,6 +14,8 @@ def get_session():
 def create_tables(app:FastAPI):
     """ Crea todas las tablas de la base de datos """
     SQLModel.metadata.create_all(engine)
-
+    print("Tablas creadas")
+    yield
+    
 # Obtener la session de la base de datos
 session = Annotated[Session,Depends(get_session)]
