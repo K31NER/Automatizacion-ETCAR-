@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Mantenimiento - ETCAR</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @media (max-width: 400px) {
+            .responsive-text { font-size: 0.875rem; }
+        }
+        /* Estilo para el spinner de carga */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: #fff; /* Color del spinner */
+            animation: spin 1s ease infinite;
+            display: inline-block; /* Para que esté en la misma línea que el texto */
+            margin-right: 8px; /* Espacio entre spinner y texto */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-green-50">
+    <div class="container mx-auto p-4 lg:p-8 max-w-4xl 2xl:max-w-6xl">
+        <header class="mb-8 text-center space-y-4">
+            <h1 class="text-2xl lg:text-3xl font-bold text-green-800">HOJA DE VIDA MAQUINARIAS</h1>
+            <p class="text-green-600 responsive-text">Registro de Mantenimiento - ETCAR</p>
+        </header>
+
+        <form id="maintenanceForm" class="bg-white p-4 sm:p-6 lg:p-8 rounded-xl shadow-2xl space-y-6">
+            <!-- Sección de Datos Principales -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Columna Izquierda -->
+                <div class="space-y-4">
+                    <!-- Nombre de la Máquina -->
+                    <div class="space-y-1">
+                        <label for="nombreMaquina" class="block text-sm font-medium text-green-700">Nombre de la Máquina</label>
+                        <input type="text" id="nombreMaquina" name="nombreMaquina" required
+                            class="w-full px-3 py-2 border-2 border-green-100 rounded-lg focus:ring-2 focus:ring-green-500"
+                            placeholder="Ej: SIERRA DE BANCO">
+                    </div>
+
+                    <!-- Marca/Modelo -->
+                    <div class="space-y-1">
+                        <label for="marcaModelo" class="block text-sm font-medium text-green-700">Marca / Modelo</label>
+                        <input type="text" id="marcaModelo" name="marcaModelo" required
+                            class="w-full px-3 py-2 border-2 border-green-100 rounded-lg focus:ring-2 focus:ring-green-500"
+                            placeholder="Ej: HURTADO / 5hp">
+                    </div>
+                </div>
+
+                <!-- Columna Derecha -->
+                <div class="space-y-4">
+                    <!-- Ubicación Actual -->
+                    <div class="space-y-1">
+                        <label for="ubicacionActual" class="block text-sm font-medium text-green-700">Ubicación Actual</label>
+                        <input type="text" id="ubicacionActual" name="ubicacionActual" required
+                            class="w-full px-3 py-2 border-2 border-green-100 rounded-lg focus:ring-2 focus:ring-green-500"
+                            placeholder="Ej: Taller de Carpintería">
+                    </div>
+
+                    <!-- Tipo de Mantenimiento -->
+                    <div class="space-y-1">
+                        <label for="tipoMantenimiento" class="block text-sm font-medium text-green-700">Tipo de Mantenimiento</label>
+                        <select id="tipoMantenimiento" name="tipoMantenimiento" required class="w-full px-3 py-2 border-2 border-green-100 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="" disabled selected>Seleccione...</option>
+                            <option value="Preventivo">Preventivo</option>
+                            <option value="Correctivo">Correctivo</option>
+                            <option value="Instalación">Instalación</option>
+                            <option value="Revisión">Revisión</option>
+                        </select>
+                    </div>
+
+                    <!-- Responsable -->
+                    <div class="space-y-1">
+                        <label for="responsable" class="block text-sm font-medium text-green-700">Responsable</label>
+                        <input type="text" id="responsable" name="responsable" required
+                            class="w-full px-3 py-2 border-2 border-green-100 rounded-lg focus:ring-2 focus:ring-green-500"
+                            placeholder="Nombre completo">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fechas y Observaciones -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Fechas -->
+                <div class="space-y-4">
+                    <div class="space-y-1">
+                        <label for="fechaUltimoMantenimiento" class="block text-sm font-medium text-green-700">Fecha Último Mantenimiento</label>
+                        <input type="date" id="fechaUltimoMantenimiento" name="fechaUltimoMantenimiento" required
+                            class="w-full px-3 py-2 border-2 border-green-100 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <label for="proximoMantenimiento" class="block text-sm font-medium text-green-700">Próximo Mantenimiento</label>
+                        <input type="date" id="proximoMantenimiento" name="proximoMantenimiento"
+                            class="w-full px-3 py-2 border-2 border-green-100 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="space-y-1">
+                    <label for="observaciones" class="block text-sm font-medium text-green-700">Observaciones</label>
+                    <textarea id="observaciones" name="observaciones" rows="4"
+                        class="w-full px-3 py-2 border-2 border-green-100 rounded-lg focus:ring-2 focus:ring-green-500"
+                        placeholder="Describa las observaciones..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Área de Mensajes -->
+            <div id="messageArea" class="mt-4 text-center text-sm">
+                <!-- Los mensajes de éxito o error se mostrarán aquí -->
+            </div>
+
+            <!-- Botón de Envío -->
+            <div class="pt-4">
+                <button type="submit" id="submitButton"
+                    class="w-full flex items-center justify-center px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                    <span id="buttonText">Guardar Registro</span>
+                    <span id="buttonSpinner" class="spinner hidden"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('maintenanceForm');
+            const submitButton = document.getElementById('submitButton');
+            const buttonText = document.getElementById('buttonText');
+            const buttonSpinner = document.getElementById('buttonSpinner');
+            const messageArea = document.getElementById('messageArea');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Prevenir el envío tradicional del formulario
+
+                // --- 1. Cambiar estado del botón a "cargando" ---
+                submitButton.disabled = true;
+                buttonText.textContent = 'Guardando...';
+                buttonSpinner.classList.remove('hidden'); // Mostrar spinner
+                messageArea.textContent = ''; // Limpiar mensajes previos
+                messageArea.className = 'mt-4 text-center text-sm'; // Resetear clases de mensaje
+
+                // --- 2. Recolectar datos del formulario ---
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    // Si un campo de fecha está vacío, no lo envíes o envíalo como null
+                    // FastAPI/Pydantic puede manejar campos opcionales si se definen como Optional[date]
+                    if (form.elements[key] && form.elements[key].type === 'date' && value === '') {
+                        data[key] = null; 
+                    } else {
+                        data[key] = value;
+                    }
+                });
+
+                // Opcional: Si necesitas enviar datos adicionales que no están en el formulario
+                // data.extraField = 'algunValor';
+
+                console.log('Datos a enviar al backend:', JSON.stringify(data, null, 2));
+
+                // --- 3. Realizar la petición FETCH al backend ---
+                try {
+                    // =================================================================
+                    // MODIFICAR AQUÍ: URL del endpoint de tu backend FastAPI
+                    // Ejemplo: const API_ENDPOINT_URL = 'http://localhost:8000/api/mantenimientos/';
+                    // Asegúrate que tu backend FastAPI tenga un endpoint que acepte POST en esta URL.
+                    const API_ENDPOINT_URL = '/api/v1/registrar-mantenimiento'; // CAMBIA ESTA URL
+                    // =================================================================
+
+                    const response = await fetch(API_ENDPOINT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // 'Accept': 'application/json', // Opcional, pero buena práctica
+                            // Si usas autenticación JWT, añade el token aquí:
+                            // 'Authorization': `Bearer ${tuTokenJWT}` 
+                        },
+                        body: JSON.stringify(data) // Convertir el objeto JS a una cadena JSON
+                    });
+
+                    // --- 4. Manejar la respuesta del backend ---
+                    if (response.ok) { // Si el estado HTTP es 2xx (ej. 200 OK, 201 Created)
+                        const result = await response.json(); // Asumimos que el backend devuelve JSON
+                        
+                        // =================================================================
+                        // MODIFICAR AQUÍ: Cómo manejas una respuesta exitosa.
+                        // 'result' contendrá lo que tu backend devuelva.
+                        // Ejemplo: si tu backend devuelve { "message": "Registro guardado", "id": 123 }
+                        console.log('Respuesta exitosa del backend:', result);
+                        messageArea.textContent = result.message || 'Registro guardado con éxito.';
+                        messageArea.classList.add('text-green-700', 'font-semibold');
+                        // =================================================================
+                        
+                        form.reset(); // Limpiar el formulario después de un envío exitoso
+                    
+                    } else { // Si el estado HTTP indica un error (4xx, 5xx)
+                        let errorMessage = `Error del servidor: ${response.status} ${response.statusText}`;
+                        try {
+                            const errorResult = await response.json();
+                            // =================================================================
+                            // MODIFICAR AQUÍ: Cómo extraes el mensaje de error del JSON de respuesta de tu backend.
+                            // Ejemplo: si tu backend devuelve { "detail": "Faltan campos obligatorios" }
+                            // o { "error": { "message": "..." } }
+                            errorMessage = errorResult.detail || errorResult.message || JSON.stringify(errorResult);
+                            // =================================================================
+                        } catch (e) {
+                            // Si la respuesta de error no es JSON, usa el texto plano.
+                            const textError = await response.text();
+                            if (textError) errorMessage = textError;
+                        }
+                        console.error('Error del backend:', errorMessage);
+                        messageArea.textContent = `Error al guardar: ${errorMessage}`;
+                        messageArea.classList.add('text-red-600', 'font-semibold');
+                    }
+
+                } catch (error) { // Errores de red u otros errores de JavaScript
+                    console.error('Error en la petición fetch:', error);
+                    messageArea.textContent = 'Error de conexión o al procesar la solicitud.';
+                    messageArea.classList.add('text-red-600', 'font-semibold');
+                } finally {
+                    // --- 5. Restaurar estado del botón ---
+                    submitButton.disabled = false;
+                    buttonText.textContent = 'Guardar Registro';
+                    buttonSpinner.classList.add('hidden'); // Ocultar spinner
+                }
+            });
+        });
+    </script>
+</body>
+</html>
