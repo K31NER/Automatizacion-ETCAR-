@@ -43,7 +43,7 @@ Sistema de automatización de formularios empresariales que transforma procesos 
 
 ## ✨ Propuesta de Solución
 
-**Automatización ETCAR** emerge como una solución tecnológica integral que revoluciona la gestión de formularios de mantenimiento de maquinaria a través de la digitalización completa del proceso.
+**Automatización** emerge como una solución tecnológica integral que revoluciona la gestión de formularios de mantenimiento de maquinaria a través de la digitalización completa del proceso.
 
 ### 🎯 Funcionalidades Principales
 
