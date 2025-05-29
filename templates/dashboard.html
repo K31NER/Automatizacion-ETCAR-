@@ -12,99 +12,146 @@
             max-width: 100vw;
             overflow-x: hidden;
         }
-        main {
-            max-width: 100vw;
-            overflow-x: hidden;
-        }
+        
         .dashboard-grid {
             grid-template-columns: 250px 1fr;
         }
+        
         @media (max-width: 1024px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
         }
+        
         .table-container {
             width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-        .table-container::-webkit-scrollbar {
-            height: 8px;
-        }
-        .table-container {
-            scrollbar-width: thin;
-        }
-        /* Tabla responsiva tipo stacked */
-        @media (max-width: 640px) {
+        
+        /* Tabla responsiva optimizada para móvil */
+        @media (max-width: 768px) {
             table.responsive-table thead {
                 display: none;
             }
+            
             table.responsive-table tbody tr {
                 display: block;
                 margin-bottom: 1rem;
-                border-radius: 0.5rem;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                border-radius: 0.75rem;
+                border: 1px solid #e5e7eb;
                 background: #fff;
+                padding: 1rem;
             }
+            
             table.responsive-table td {
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
-                padding: 0.75rem 1rem;
+                align-items: flex-start;
+                padding: 0.5rem 0;
                 border: none;
                 border-bottom: 1px solid #f3f4f6;
-                font-size: 0.95rem;
-                word-break: break-word;
+                font-size: 0.875rem;
             }
+            
             table.responsive-table td:last-child {
                 border-bottom: none;
             }
+            
             table.responsive-table td::before {
                 content: attr(data-label);
                 font-weight: 600;
                 color: #047857;
-                flex-basis: 50%;
-                text-align: left;
-                padding-right: 1rem;
+                min-width: 100px;
+                flex-shrink: 0;
+            }
+            
+            table.responsive-table td .status-badge {
+                margin-left: auto;
             }
         }
-        /* Sidebar overlay for mobile */
-        .sidebar-overlay {
-            background: rgba(0,0,0,0.4);
-            position: fixed;
-            inset: 0;
-            z-index: 40;
-            display: none;
+        
+        /* Estados y badges optimizados */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
-        .sidebar-overlay.active {
-            display: block;
+        
+        .status-preventivo { background-color: #dcfce7; color: #166534; }
+        .status-correctivo { background-color: #fef3c7; color: #92400e; }
+        .status-pendiente { background-color: #fee2e2; color: #991b1b; }
+        
+        /* Optimizaciones generales */
+        .card-shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+        .date-warning { color: #dc2626; font-weight: 600; }
+        .date-normal { color: #374151; }
+        
+        /* Botones optimizados */
+        .btn-primary {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transition: all 0.2s ease;
         }
-        .sidebar-mobile {
-            transform: translateX(-100%);
-            transition: transform 0.3s;
+        .btn-primary:hover { background: linear-gradient(135deg, #047857 0%, #065f46 100%); }
+        
+        /* Estilos para mensaje de bienvenida móvil */
+        #mobileGreeting { font-size: 0.75rem; opacity: 0.8; }
+        #mobileUserName { font-size: 0.875rem; font-weight: 600; }
+        #mobileLogout { transition: all 0.2s ease; }
+        #mobileLogout:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2); }
+        
+        /* Optimización para búsqueda móvil */
+        .search-mobile {
+            position: relative;
+            width: 100%;
         }
-        .sidebar-mobile.active {
-            transform: translateX(0);
+        
+        .search-mobile input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
         }
-        @media (min-width: 1024px) {
-            .sidebar-mobile {
-                transform: none !important;
+        
+        .search-mobile .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+        
+        /* Header móvil mejorado */
+        .mobile-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (min-width: 640px) {
+            .mobile-header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
             }
         }
+        
+        /* Logo blanco para sidebar en pantallas grandes */
+        #sidebar .sidebar-logo { filter: brightness(0) invert(1); }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Overlay para sidebar móvil (ya no se usa, pero lo dejo para escritorio) -->
-    <div id="sidebarOverlay" class="sidebar-overlay lg:hidden hidden"></div>
-    <!-- Botón menú hamburguesa para móvil (ya no se usa) -->
-    <button id="menuButton" class="fixed top-4 left-4 z-50 p-2 bg-green-700 text-white rounded-full shadow-lg hidden"></button>
     <!-- Contenedor Principal -->
     <div class="dashboard-grid grid min-h-screen">
-        <!-- Sidebar solo visible en escritorio/tablet -->
-        <aside id="sidebar" class="bg-green-900 p-4 text-white shadow-lg sidebar-mobile lg:static lg:translate-x-0 hidden lg:block fixed top-0 left-0 h-full w-64 z-50">
+        <!-- Sidebar solo visible en escritorio -->
+        <aside id="sidebar" class="bg-green-900 p-4 text-white shadow-lg hidden lg:block">
             <div class="mb-8 flex items-center space-x-2">
-                <img src="/static/img/logo.png" alt="ETCAR Logo" class="w-12 h-12">
+                <img src="/static/img/logo.png" alt="ETCAR Logo" class="sidebar-logo w-12 h-12">
                 <h2 class="text-xl font-bold">ETCAR</h2>
             </div>
             <nav class="space-y-1">
@@ -112,7 +159,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"/>
                     </svg>
-                    <span>Dashboard</span>
+                    <span>Reportes</span>
                 </a>
                 <a href="#" data-section="cronograma" class="nav-link flex items-center space-x-2 p-3 rounded-lg hover:bg-green-800 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,12 +168,6 @@
                     <span>Cronograma</span>
                 </a>
                 <div class="pt-4 mt-4 border-t border-green-700">
-                    <div class="flex items-center p-2">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 19.5h15a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H4.5A1.5 1.5 0 003 6v12a1.5 1.5 0 001.5 1.5z"/>
-                        </svg>
-                        <span class="text-sm font-medium">Jhony Destouch</span>
-                    </div>
                     <button class="mt-2 w-full flex items-center justify-center space-x-2 p-2 text-sm text-red-300 hover:bg-red-800 rounded transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H9"/>
@@ -137,42 +178,69 @@
             </nav>
         </aside>
         <!-- Contenido Principal -->
-        <main class="p-2 sm:p-4 lg:p-8 transition-all duration-300 w-full max-w-full overflow-x-hidden">
-            <!-- Encabezado -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-2">
+        <main class="p-3 lg:p-6 w-full">
+            <!-- Header optimizado para móvil -->
+            <div class="mobile-header">
                 <div>
-                    <h1 class="text-lg sm:text-xl lg:text-2xl font-bold text-green-800" id="pageTitle">Dashboard</h1>
-                    <p class="text-xs sm:text-sm text-gray-600 mt-1">Sistema de Gestión de Mantenimiento</p>
+                    <!-- Información del usuario para móvil -->
+                    <div class="flex lg:hidden items-center justify-between mb-3">
+                        <div class="flex items-center space-x-2">
+                            <img src="/static/img/logo.png" alt="ETCAR" class="w-8 h-8 rounded-lg shadow-sm">
+                            <div class="flex flex-col">
+                                <span class="text-xs text-gray-500" id="mobileGreeting">Buenos días</span>
+                                <span class="text-sm font-medium text-green-700" id="mobileUserName">Jhony</span>
+                            </div>
+                        </div>
+                        <button id="mobileLogout" class="flex items-center space-x-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors shadow-sm" title="Cerrar sesión">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H9"/>
+                            </svg>
+                            <span class="text-sm font-medium">Salir</span>
+                        </button>
+                    </div>
+                    
+                    <h1 class="text-xl lg:text-2xl font-bold text-green-800" id="pageTitle">Reportes</h1>
+                    <p class="text-sm text-gray-600 mt-1">Sistema de Gestión de Mantenimiento</p>
                 </div>
-                <div class="hidden md:flex items-center space-x-3">
-                    <span class="text-gray-700">Bienvenido, <span class="font-medium">Jhony</span></span>
+                
+                <!-- Búsqueda para móvil y desktop -->
+                <div class="search-mobile lg:max-w-sm">
+                    <svg class="search-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" placeholder="Buscar registros..." class="search-input" id="searchInput">
                 </div>
+            </div>
+            
+            <!-- Información del usuario (solo desktop) -->
+            <div class="hidden lg:flex justify-end mb-4">
+                <span class="text-gray-700">Bienvenido, <span class="font-medium">Jhony</span></span>
             </div>
             <!-- Secciones -->
             <div id="dashboardSection" class="section-content active">
                 <!-- Tabla de Registros -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-                    <div class="p-3 sm:p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                        <h2 class="text-base sm:text-lg font-semibold text-green-800">Registros de Mantenimiento</h2>
-                        <button class="px-3 py-2 sm:px-4 sm:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-xs sm:text-sm flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden card-shadow">
+                    <div class="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <h2 class="text-lg font-semibold text-green-800">Registros de Mantenimiento</h2>
+                        <button class="btn-primary px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                             </svg>
-                            Nuevo Registro
+                            Nuevo Reporte
                         </button>
                     </div>
                     <div class="table-container">
-                        <table class="responsive-table min-w-full divide-y divide-gray-200 text-xs sm:text-sm">
+                        <table class="responsive-table min-w-full divide-y divide-gray-200 text-sm">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Máquina</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Marca/Modelo</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Ubicación</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Último Mant.</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Próximo Mant.</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Observaciones</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Máquina</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Marca/Modelo</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Ubicación</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Último Mant.</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Próximo Mant.</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Observaciones</th>
                                 </tr>
                             </thead>
                             <tbody id="registrosBody" class="bg-white divide-y divide-gray-200">
@@ -182,34 +250,34 @@
                     </div>
                 </div>
             </div>
+            
             <div id="cronogramaSection" class="section-content hidden">
                 <!-- Tabla Cronograma -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-                    <div class="p-3 sm:p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                        <h2 class="text-base sm:text-lg font-semibold text-green-800">Cronograma de Mantenimiento</h2>
-                        <button class="px-3 py-2 sm:px-4 sm:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-xs sm:text-sm flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden card-shadow">
+                    <div class="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <h2 class="text-lg font-semibold text-green-800">Cronograma de Mantenimiento</h2>
+                        <button class="btn-primary px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                             </svg>
                             Nuevo Cronograma
                         </button>
                     </div>
                     <div class="table-container">
-                        <table class="responsive-table min-w-full divide-y divide-gray-200 text-xs sm:text-sm">
+                        <table class="responsive-table min-w-full divide-y divide-gray-200 text-sm">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Máquina</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Marca/Modelo</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tarea</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Frecuencia</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Próximo Mant.</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
-                                    <th class="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Máquina</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Marca/Modelo</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tarea</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Frecuencia</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Próximo Mant.</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                                 </tr>
                             </thead>
                             <tbody id="cronogramaBody" class="bg-white divide-y divide-gray-200">
-                                <!-- Datos del backend se insertarán aquí -->
+                                <!-- Datos se insertarán aquí -->
                             </tbody>
                         </table>
                     </div>
@@ -217,27 +285,21 @@
             </div>
         </main>
     </div>
-    <!-- Barra de navegación inferior tipo WhatsApp (solo en móvil) -->
-    <nav id="bottomNav" class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-1 z-50 shadow-lg block lg:hidden">
-        <button class="bottom-nav-link flex flex-col items-center justify-center px-2 py-1 text-green-700 font-semibold focus:outline-none active" data-section="dashboard">
-            <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <!-- Barra de navegación inferior para móvil -->
+    <nav class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 z-50 shadow-lg lg:hidden">
+        <button class="bottom-nav-link flex flex-col items-center justify-center px-3 py-2 text-green-700 font-medium focus:outline-none active" data-section="dashboard">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"/>
             </svg>
-            <span class="text-xs">Dashboard</span>
+            <span class="text-xs">Reportes</span>
         </button>
-        <button class="bottom-nav-link flex flex-col items-center justify-center px-2 py-1 text-gray-500 font-semibold focus:outline-none" data-section="cronograma">
-            <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button class="bottom-nav-link flex flex-col items-center justify-center px-3 py-2 text-gray-500 font-medium focus:outline-none" data-section="cronograma">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 6.878V6a2.25 2.25 0 012.25-2.25h7.5A2.25 2.25 0 0118 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 004.5 9v.878m13.5-3A2.25 2.25 0 0119.5 9v.878m0 0a2.246 2.246 0 00-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0121 12v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6c0-.98.626-1.813 1.5-2.122"/>
             </svg>
             <span class="text-xs">Cronograma</span>
         </button>
     </nav>
-    <!-- Botón Flotante para Mobile (ajustado para no tapar la barra) -->
-    <button class="fixed bottom-16 right-4 p-3 sm:p-4 bg-green-600 text-white rounded-full shadow-lg z-40 lg:bottom-4" id="actionButton">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-        </svg>
-    </button>
     <script>
         // Datos de ejemplo (simularían los de la base de datos)
         const registros = [
@@ -249,7 +311,7 @@
                 ultimo: "27/04/2025",
                 proximo: "27/05/2025",
                 responsable: "Jhony Destouch Gaviria",
-                observaciones: "Buen estado"
+                observaciones: "La innovación impulsa el cambio y abre caminos hacia un futuro más conectado y eficiente"
             },
             {
                 maquina: "TORNO",
@@ -266,7 +328,6 @@
         // Datos de ejemplo para el cronograma
         const cronogramaData = [
             {
-                id: "001",
                 maquina: "SIERRA DE BANCO",
                 marca: "HURTADO / 5hp",
                 tarea: "Engrase, Limpieza y Ajuste necesario",
@@ -277,26 +338,54 @@
             }
         ];
 
+        // ================================
+        // UTILIDADES GENERALES
+        // ================================
+        
+        // Función para verificar si una fecha está próxima (dentro de 7 días)
+        function isDateSoon(dateString) {
+            const today = new Date();
+            const targetDate = new Date(dateString.split('/').reverse().join('-'));
+            const diffTime = targetDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays <= 7 && diffDays >= 0;
+        }
+
+        // Función genérica para crear celdas de tabla
+        function createTableCell(label, content, className = 'text-gray-600') {
+            return `<td data-label="${label}" class="px-4 py-3 text-sm ${className}">${content}</td>`;
+        }
+
+        // Función para generar alertas de fecha
+        function getDateAlert(date, alertText = '¡Próximo!') {
+            const fechaClase = isDateSoon(date) ? 'date-warning' : 'date-normal';
+            const alertaFecha = isDateSoon(date) ? `<span class="ml-1 text-xs text-red-600">${alertText}</span>` : '';
+            return { fechaClase, alertaFecha };
+        }
+
+        // ================================
+        // RENDERIZADO DE TABLAS
+        // ================================
+        
         // Función para poblar la tabla de registros
         function cargarRegistros() {
             const tbody = document.getElementById('registrosBody');
             tbody.innerHTML = '';
+            
             registros.forEach(registro => {
                 const fila = document.createElement('tr');
                 fila.className = 'hover:bg-gray-50 transition-colors';
+                const { fechaClase, alertaFecha } = getDateAlert(registro.proximo);
+                
                 fila.innerHTML = `
-                    <td data-label="Máquina" class="px-4 py-3 text-sm whitespace-nowrap">${registro.maquina}</td>
-                    <td data-label="Marca/Modelo" class="px-4 py-3 text-sm whitespace-nowrap">${registro.marca}</td>
-                    <td data-label="Ubicación" class="px-4 py-3 text-sm whitespace-nowrap">${registro.ubicacion}</td>
-                    <td data-label="Tipo" class="px-4 py-3 text-sm whitespace-nowrap">
-                        <span class="px-2 py-1 rounded-full ${registro.tipo === 'Preventivo' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
-                            ${registro.tipo}
-                        </span>
-                    </td>
-                    <td data-label="Último Mant." class="px-4 py-3 text-sm whitespace-nowrap">${registro.ultimo}</td>
-                    <td data-label="Próximo Mant." class="px-4 py-3 text-sm whitespace-nowrap">${registro.proximo}</td>
-                    <td data-label="Responsable" class="px-4 py-3 text-sm whitespace-nowrap">${registro.responsable}</td>
-                    <td data-label="Observaciones" class="px-4 py-3 text-sm max-w-xs">${registro.observaciones}</td>
+                    ${createTableCell('Máquina', registro.maquina, 'font-medium text-gray-900')}
+                    ${createTableCell('Marca/Modelo', registro.marca)}
+                    ${createTableCell('Ubicación', registro.ubicacion)}
+                    ${createTableCell('Tipo', `<span class="status-badge ${registro.tipo === 'Preventivo' ? 'status-preventivo' : 'status-correctivo'}">${registro.tipo}</span>`)}
+                    ${createTableCell('Último Mant.', registro.ultimo)}
+                    ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${registro.proximo}</span>${alertaFecha}`)}
+                    ${createTableCell('Responsable', registro.responsable)}
+                    ${createTableCell('Observaciones', registro.observaciones)}
                 `;
                 tbody.appendChild(fila);
             });
@@ -306,118 +395,218 @@
         function cargarCronograma() {
             const tbody = document.getElementById('cronogramaBody');
             tbody.innerHTML = '';
+            
             cronogramaData.forEach(item => {
                 const fila = document.createElement('tr');
                 fila.className = 'hover:bg-gray-50 transition-colors';
+                const { fechaClase, alertaFecha } = getDateAlert(item.proximo, '¡Urgente!');
+                
                 fila.innerHTML = `
-                    <td data-label="ID" class="px-4 py-3 text-sm whitespace-nowrap">${item.id}</td>
-                    <td data-label="Máquina" class="px-4 py-3 text-sm whitespace-nowrap">${item.maquina}</td>
-                    <td data-label="Marca/Modelo" class="px-4 py-3 text-sm whitespace-nowrap">${item.marca}</td>
-                    <td data-label="Tarea" class="px-4 py-3 text-sm whitespace-nowrap">${item.tarea}</td>
-                    <td data-label="Frecuencia" class="px-4 py-3 text-sm whitespace-nowrap">${item.frecuencia}</td>
-                    <td data-label="Próximo Mant." class="px-4 py-3 text-sm whitespace-nowrap">${item.proximo}</td>
-                    <td data-label="Responsable" class="px-4 py-3 text-sm whitespace-nowrap">${item.responsable}</td>
-                    <td data-label="Estado" class="px-4 py-3 text-sm whitespace-nowrap">
-                        <span class="px-2 py-1 rounded-full ${item.estado === 'Pendiente' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">
-                            ${item.estado}
-                        </span>
-                    </td>
+                    ${createTableCell('Máquina', item.maquina, 'font-medium text-gray-900')}
+                    ${createTableCell('Marca/Modelo', item.marca)}
+                    ${createTableCell('Tarea', item.tarea)}
+                    ${createTableCell('Frecuencia', `<span class="status-badge bg-blue-100 text-blue-700">${item.frecuencia}</span>`)}
+                    ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${item.proximo}</span>${alertaFecha}`)}
+                    ${createTableCell('Responsable', item.responsable)}
+                    ${createTableCell('Estado', `<span class="status-badge status-${item.estado.toLowerCase()}">${item.estado}</span>`)}
                 `;
                 tbody.appendChild(fila);
             });
         }
 
         // Navegación entre secciones
-        document.querySelectorAll('.nav-link').forEach(link => {
+        document.querySelectorAll('.nav-link, .bottom-nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const section = link.dataset.section;
                 
                 // Actualizar navegación activa
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
+                document.querySelectorAll('.bottom-nav-link').forEach(l => {
+                    l.classList.remove('text-green-700', 'active');
+                    l.classList.add('text-gray-500');
+                });
+                
+                if (link.classList.contains('nav-link')) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('text-gray-500');
+                    link.classList.add('text-green-700', 'active');
+                }
                 
                 // Actualizar contenido
                 document.querySelectorAll('.section-content').forEach(sec => sec.classList.add('hidden'));
                 document.getElementById(section + 'Section').classList.remove('hidden');
                 
                 // Actualizar título
-                document.getElementById('pageTitle').textContent = link.textContent.trim();
+                const title = section === 'dashboard' ? 'Reportes' : 'Cronograma';
+                document.getElementById('pageTitle').textContent = title;
+            });
+        });
+
+        // Función de cerrar sesión
+        function handleLogout() {
+            // Crear modal de confirmación personalizado
+            const confirmModal = document.createElement('div');
+            confirmModal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+            confirmModal.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H9"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Cerrar Sesión</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6">¿Está seguro que desea cerrar su sesión?</p>
+                    <div class="flex space-x-3">
+                        <button id="cancelLogout" class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+                            Cancelar
+                        </button>
+                        <button id="confirmLogout" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(confirmModal);
+            
+            // Event listeners para el modal
+            document.getElementById('cancelLogout').addEventListener('click', () => {
+                document.body.removeChild(confirmModal);
+            });
+            
+            document.getElementById('confirmLogout').addEventListener('click', () => {
+                // Aquí se puede agregar lógica para limpiar datos de sesión
+                // localStorage.clear();
+                // sessionStorage.clear();
                 
-                // Actualizar botón móvil según sección
-                const actionBtn = document.getElementById('actionButton');
-                actionBtn.title = `Nuevo ${section === 'dashboard' ? 'Registro' : 'Cronograma'}`;
+                // Mostrar mensaje de despedida
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'fixed inset-0 bg-white flex items-center justify-center z-50';
+                loadingDiv.innerHTML = `
+                    <div class="text-center">
+                        <div class="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <p class="text-gray-600">Cerrando sesión...</p>
+                    </div>
+                `;
+                
+                document.body.removeChild(confirmModal);
+                document.body.appendChild(loadingDiv);
+                
+                // Redirigir después de un breve delay
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
             });
-        });
-
-        // Cerrar sesión
-        document.querySelector('.text-red-300').addEventListener('click', () => {
-            alert('Cerrando sesión...');
-            window.location.href = '/login.html';
-        });
-
-        // Sidebar móvil toggle
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const menuButton = document.getElementById('menuButton');
-        function openSidebar() {
-            sidebar.classList.add('active');
-            sidebarOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Evita scroll de fondo
-        }
-        function closeSidebar() {
-            sidebar.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        menuButton.addEventListener('click', openSidebar);
-        sidebarOverlay.addEventListener('click', closeSidebar);
-        // Cerrar sidebar al seleccionar una opción en móvil
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth < 1024) closeSidebar();
+            
+            // Cerrar modal al hacer clic fuera
+            confirmModal.addEventListener('click', (e) => {
+                if (e.target === confirmModal) {
+                    document.body.removeChild(confirmModal);
+                }
             });
-        });
-        // Cerrar sidebar si se redimensiona a escritorio
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 1024) {
-                closeSidebar();
+        }
+
+        // Cerrar sesión desktop
+        const desktopLogoutBtn = document.querySelector('.text-red-300');
+        if (desktopLogoutBtn) {
+            desktopLogoutBtn.addEventListener('click', handleLogout);
+        }
+
+        // Cerrar sesión móvil
+        const mobileLogoutBtn = document.getElementById('mobileLogout');
+        if (mobileLogoutBtn) {
+            mobileLogoutBtn.addEventListener('click', handleLogout);
+        }
+
+        // Función para mostrar notificaciones toast
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+            
+            toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            // Mostrar toast
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Ocultar toast después de 3 segundos
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // ================================
+        // GESTIÓN DE USUARIO Y UI
+        // ================================
+        
+        // Función unificada para inicialización del usuario
+        function initializeUser() {
+            // Configurar saludo basado en la hora
+            const hour = new Date().getHours();
+            const greeting = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches';
+            
+            // Nombre del usuario (temporalmente hardcodeado, viene del backend)
+            const userName = 'Jhony';
+            
+            // Actualizar elementos de la interfaz
+            const mobileGreeting = document.getElementById('mobileGreeting');
+            const mobileUserName = document.getElementById('mobileUserName');
+            
+            if (mobileGreeting) mobileGreeting.textContent = greeting;
+            if (mobileUserName) mobileUserName.textContent = userName;
+            
+            // Mostrar toast de bienvenida solo en la primera carga
+            if (!sessionStorage.getItem('welcomeShown')) {
+                setTimeout(() => {
+                    showToast(`¡Bienvenido de vuelta, ${userName}!`, 'success');
+                    sessionStorage.setItem('welcomeShown', 'true');
+                }, 1000);
             }
-        });
-
-        // Mostrar sidebar solo en escritorio/tablet
-        function updateSidebarDisplay() {
-            if (window.innerWidth < 1024) {
-                document.getElementById('sidebar').classList.add('hidden');
-            } else {
-                document.getElementById('sidebar').classList.remove('hidden');
+        }
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const currentSection = document.querySelector('.section-content:not(.hidden)');
+                    const rows = currentSection.querySelectorAll('tbody tr');
+                    
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                });
             }
         }
-        updateSidebarDisplay();
-        window.addEventListener('resize', updateSidebarDisplay);
 
-        // Navegación barra inferior móvil
-        document.querySelectorAll('.bottom-nav-link').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Cambiar activo
-                document.querySelectorAll('.bottom-nav-link').forEach(b => b.classList.remove('text-green-700', 'active'));
-                this.classList.add('text-green-700', 'active');
-                // Cambiar sección
-                const section = this.dataset.section;
-                document.querySelectorAll('.section-content').forEach(sec => sec.classList.add('hidden'));
-                document.getElementById(section + 'Section').classList.remove('hidden');
-                // Cambiar título
-                document.getElementById('pageTitle').textContent = this.textContent.trim();
-                // Cambiar título del botón flotante
-                const actionBtn = document.getElementById('actionButton');
-                actionBtn.title = `Nuevo ${section === 'dashboard' ? 'Registro' : 'Cronograma'}`;
-            });
-        });
-
+        // ================================
+        // INICIALIZACIÓN
+        // ================================
+        
         // Cargar datos al iniciar
         document.addEventListener('DOMContentLoaded', () => {
+            initializeUser();
             cargarRegistros();
             cargarCronograma();
+            setupSearch();
         });
     </script>
 </body>
