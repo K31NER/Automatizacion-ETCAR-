@@ -19,3 +19,7 @@ async def dashboard(request:Request):
 @router.get("/reporte",response_class=HTMLResponse)
 async def reporte(request:Request):
     return template.TemplateResponse("reporte.html",{"request":request})
+
+@router.get("/cronograma",response_class=HTMLResponse)
+async def cronograma(request:Request):
+    return template.TemplateResponse("cronograma.html",{"request":request})
