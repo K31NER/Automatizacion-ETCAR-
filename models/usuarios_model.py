@@ -1,6 +1,9 @@
 from enum import Enum
-from typing import Optional
-from sqlmodel import SQLModel, Field
+from typing import Optional,TYPE_CHECKING,List
+from sqlmodel import SQLModel, Field, Relationship
+
+if TYPE_CHECKING:
+    from models.reportes_model import Reporte, Cronograma
 
 # manejo de roles
 class CargoEnum(str,Enum):
@@ -23,6 +26,10 @@ class UserRead(UserBase):
 # Clase para crear la tabla
 class User(CreateUser,table=True):
     id: Optional[int] = Field(primary_key=True)
+    
+    # Relación hacia Reporte y Cronograma
+    reportes: List["Reporte"] = Relationship(back_populates="responsable")
+    cronogramas: List["Cronograma"] = Relationship(back_populates="responsable")
     
     class Config:
         from_attributes = True
