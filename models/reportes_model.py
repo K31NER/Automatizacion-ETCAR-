@@ -27,12 +27,12 @@ class Maquina(SQLModel):
 class Reporte(Maquina,table=True):
     id: int = Field(primary_key=True)
     responsable_id :int = Field(foreign_key="user.id")
-    responsable: Optional[User] = Relationship(back_populates="maquinas")
+    responsable: Optional[User] = Relationship(back_populates="reportes")
     ubicacion: str = Field()
     tipo_mantenimiento: Tipomantenimiento  = Field()
     ultimo_mantenimiento: datetime = Field()
     proximo_mantenimiento: datetime = Field()
-    observacions: str = Field(max_length=350)
+    observacions: str = Field(max_length=100)
     class Config:
         from_attributes = True
 
@@ -40,9 +40,9 @@ class Reporte(Maquina,table=True):
 class Cronograma(Maquina,table=True):
     id: int = Field(primary_key=True)
     responsable_id :int = Field(foreign_key="user.id")
-    responsable: Optional[User] = Relationship(back_populates="maquinas")
-    tarea_mantenimiento: str = Field(min_length=350)
-    frecuencia: str = Field(max_length=350)
+    responsable: Optional[User] = Relationship(back_populates="cronogramas")
+    tarea_mantenimiento: str = Field(min_length=100)
+    frecuencia: str = Field(max_length=1000)
     prox_mantenimiento : datetime = Field()
     estado: Estado = Field()
     

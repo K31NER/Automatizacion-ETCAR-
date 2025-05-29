@@ -29,7 +29,7 @@ def validate_user(db:session,email:str,password:str) -> User:
     - password: str
     """
     # Consulta para obtener el email
-    query = select(email).where(User.correo == email)
+    query = select(User).where(User.correo == email)
     # Ejecutar la consulata
     result: User = db.exec(query).first()
     
