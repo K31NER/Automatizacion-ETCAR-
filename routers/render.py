@@ -23,3 +23,7 @@ async def reporte(request:Request):
 @router.get("/cronograma",response_class=HTMLResponse)
 async def cronograma(request:Request):
     return template.TemplateResponse("cronograma.html",{"request":request})
+
+@router.get("/admin",response_class=HTMLResponse)
+async def admin(request:Request):
+    return template.TemplateResponse("admin.html",{"request":request})
