@@ -39,8 +39,11 @@ class Reporte(Maquina,table=True):
 # Clase de crogronogramas de mantenimientos
 class Cronograma(Maquina,table=True):
     id: int = Field(primary_key=True)
+    nombre_maquina: str = Field()
+    marca_modelo: str = Field()
     responsable_id :int = Field(foreign_key="user.id")
     responsable: Optional[User] = Relationship(back_populates="cronogramas")
+    ubicacion: str = Field()
     tarea_mantenimiento: str = Field(min_length=100)
     frecuencia: str = Field(max_length=1000)
     prox_mantenimiento : datetime = Field()

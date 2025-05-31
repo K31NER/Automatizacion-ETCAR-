@@ -1,7 +1,7 @@
 import os
 from jose import jwt, JWTError
 from dotenv import load_dotenv
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends, HTTPException, Request, UploadFile, status
 from datetime import datetime,timedelta,timezone
 
 load_dotenv()
@@ -13,7 +13,7 @@ Time = int(os.getenv("TIME","3600"))
 
 credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Credenciales invalidas",
         headers={"WWW-Authenticate": "Bearer"},
     )
     
@@ -69,9 +69,23 @@ async def get_current_user(request: Request):
 def required_admin(current_user: dict = Depends(get_current_user)) -> dict :
     """ Validar el rol de administrador """
     
-    if current_user["role"] != "admin":
+    if current_user.get("role") != "Administrador":
         raise HTTPException(
             status_code=403,
             detail="Acceso no autorizado"
         )
     return current_user
+
+# Tipos de archivos permitiodos
+EXTENSIONES_PERMITIDAS = ["image/jpeg", "image/png", "image/jpg", "image/webp"]
+
+async def validar_tipo_archivo(firma: UploadFile):
+    """ Valida que el formato sea de tipo imagen"""
+    if firma.content_type not in EXTENSIONES_PERMITIDAS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Tipo de archivo no permitido: {firma.content_type}. Solo se permiten imágenes."
+        )
+    contenido = await firma.read()
+    
+    return contenido

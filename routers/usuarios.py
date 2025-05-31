@@ -3,9 +3,9 @@ from utils.credential import *
 from utils.manage_users import *
 from db.db_config import session 
 from models.usuarios_model import *
-from fastapi import APIRouter, Response
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, Response , Form, UploadFile,File
 
 router = APIRouter(tags=["Usuarios"])
 
@@ -37,3 +37,37 @@ async def login(response: Response, db: session ,data: User_login):
     response.set_cookie("access_token",token,httponly=True,secure=True,samesite="strict")
 
     return response
+
+@router.post("/signup")
+async def singnup(db: session, 
+                name: str = Form(...),
+                rol: str = Form(...),
+                email: str = Form(...),
+                password: str = Form(...), 
+                firma: UploadFile = File(...)):
+    
+    # Validamos y volvemos la foto bytes
+    firma_content = await validar_tipo_archivo(firma)
+    
+    # Creamos el nuevo usuario
+    new_user = User(
+        nombre=name,
+        correo=email,
+        cargo=rol,
+        contraseña= hased_password(password),
+        firma=firma_content
+    )
+    
+    # Guardamos los cambios
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    return JSONResponse(content={
+        "message": "Nuevo usuario creado con exito",
+        "user": {
+            "id": new_user.id,
+            "nombre": new_user.nombre,
+            "rol": new_user.cargo
+        }
+    },status_code=201)
