@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 class Create_report(BaseModel):
+    id: int
     nombre_maquina: str
     ubicacion: str
     marca: str
@@ -10,6 +11,7 @@ class Create_report(BaseModel):
     observaciones: str
     
 class Create_cronograma(BaseModel):
+    id: int
     nombre_maquina: str
     tarea_mantenimiento: str
     ubicacion: str

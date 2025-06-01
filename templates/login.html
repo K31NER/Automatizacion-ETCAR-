@@ -80,9 +80,16 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Mostrar mensaje si viene de redirección por falta de login
+            const messageArea = document.getElementById('messageArea');
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('next') === 'protected' || sessionStorage.getItem('showLoginMessage')) {
+                messageArea.innerHTML = `<div class="text-red-600 font-medium mb-2">Por favor inicie sesión para continuar</div>`;
+                sessionStorage.removeItem('showLoginMessage');
+            }
+
             const loginForm = document.getElementById('loginForm');
             const loginButton = document.getElementById('loginButton');
-            const messageArea = document.getElementById('messageArea');
             const togglePassword = document.getElementById('togglePassword');
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');

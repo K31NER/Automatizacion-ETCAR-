@@ -168,7 +168,7 @@
                     <span>Cronograma</span>
                 </a>
                 <div class="pt-4 mt-4 border-t border-green-700">
-                    <button class="mt-2 w-full flex items-center justify-center space-x-2 p-2 text-sm text-red-300 hover:bg-red-800 rounded transition-colors">
+                    <button class="mt-2 w-full flex items-center justify-center space-x-2 p-2 text-sm text-red-300 hover:bg-red-800 rounded transition-colors" action="/logout" id="desktopLogout">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H9"/>
                         </svg>
@@ -301,48 +301,9 @@
         </button>
     </nav>
     <script>
-        // Datos de ejemplo (simularían los de la base de datos)
-        const registros = [
-            {
-                maquina: "SIERRA DE BANCO",
-                marca: "HURTADO / 5hp",
-                ubicacion: "Taller de Carpintería",
-                tipo: "Preventivo",
-                ultimo: "27/04/2025",
-                proximo: "27/05/2025",
-                responsable: "Jhony Destouch Gaviria",
-                observaciones: "La innovación impulsa el cambio y abre caminos hacia un futuro más conectado y eficiente"
-            },
-            {
-                maquina: "TORNO",
-                marca: "OSMA HURTADO",
-                ubicacion: "Taller de Carpintería",
-                tipo: "Correctivo",
-                ultimo: "15/04/2025",
-                proximo: "15/05/2025",
-                responsable: "Jhony Destouch Gaviria",
-                observaciones: "Cambio de piezas"
-            }
-        ];
-
-        // Datos de ejemplo para el cronograma
-        const cronogramaData = [
-            {
-                maquina: "SIERRA DE BANCO",
-                marca: "HURTADO / 5hp",
-                tarea: "Engrase, Limpieza y Ajuste necesario",
-                frecuencia: "Mensual",
-                proximo: "27/05/2025",
-                responsable: "Jhony Destouch Gaviria",
-                estado: "Pendiente"
-            }
-        ];
-
-        // ================================
-        // UTILIDADES GENERALES
-        // ================================
-        
-        // Función para verificar si una fecha está próxima (dentro de 7 días)
+        function getUserName() {
+            return '{{ username | safe }}';
+        }
         function isDateSoon(dateString) {
             const today = new Date();
             const targetDate = new Date(dateString.split('/').reverse().join('-'));
@@ -350,230 +311,82 @@
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             return diffDays <= 7 && diffDays >= 0;
         }
-
-        // Función genérica para crear celdas de tabla
         function createTableCell(label, content, className = 'text-gray-600') {
             return `<td data-label="${label}" class="px-4 py-3 text-sm ${className}">${content}</td>`;
         }
-
-        // Función para generar alertas de fecha
         function getDateAlert(date, alertText = '¡Próximo!') {
             const fechaClase = isDateSoon(date) ? 'date-warning' : 'date-normal';
             const alertaFecha = isDateSoon(date) ? `<span class="ml-1 text-xs text-red-600">${alertText}</span>` : '';
             return { fechaClase, alertaFecha };
         }
 
-        // ================================
-        // RENDERIZADO DE TABLAS
-        // ================================
-        
-        // Función para poblar la tabla de registros
-        function cargarRegistros() {
+        async function cargarRegistros() {
             const tbody = document.getElementById('registrosBody');
             tbody.innerHTML = '';
-            
-            registros.forEach(registro => {
-                const fila = document.createElement('tr');
-                fila.className = 'hover:bg-gray-50 transition-colors';
-                const { fechaClase, alertaFecha } = getDateAlert(registro.proximo);
-                
-                fila.innerHTML = `
-                    ${createTableCell('Máquina', registro.maquina, 'font-medium text-gray-900')}
-                    ${createTableCell('Marca/Modelo', registro.marca)}
-                    ${createTableCell('Ubicación', registro.ubicacion)}
-                    ${createTableCell('Tipo', `<span class="status-badge ${registro.tipo === 'Preventivo' ? 'status-preventivo' : 'status-correctivo'}">${registro.tipo}</span>`)}
-                    ${createTableCell('Último Mant.', registro.ultimo)}
-                    ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${registro.proximo}</span>${alertaFecha}`)}
-                    ${createTableCell('Responsable', registro.responsable)}
-                    ${createTableCell('Observaciones', registro.observaciones)}
-                `;
-                tbody.appendChild(fila);
-            });
+            try {
+                const response = await fetch('/reporte?user_id={{ id }}');
+                if (!response.ok) throw new Error('No se pudieron cargar los reportes');
+                const registros = await response.json();
+                registros.forEach(registro => {
+                    const fila = document.createElement('tr');
+                    fila.className = 'hover:bg-gray-50 transition-colors';
+                    const { fechaClase, alertaFecha } = getDateAlert(registro.proximo);
+                    fila.innerHTML = `
+                        ${createTableCell('Máquina', registro.maquina, 'font-medium text-gray-900')}
+                        ${createTableCell('Marca/Modelo', registro.marca)}
+                        ${createTableCell('Ubicación', registro.ubicacion)}
+                        ${createTableCell('Tipo', `<span class="status-badge ${registro.tipo === 'Preventivo' ? 'status-preventivo' : 'status-correctivo'}">${registro.tipo}</span>`)}
+                        ${createTableCell('Último Mant.', registro.ultimo)}
+                        ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${registro.proximo}</span>${alertaFecha}`)}
+                        ${createTableCell('Responsable', registro.responsable)}
+                        ${createTableCell('Observaciones', registro.observaciones)}
+                    `;
+                    tbody.appendChild(fila);
+                });
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-red-600">Error al cargar reportes</td></tr>';
+            }
         }
-
-        // Función para poblar la tabla de cronograma
-        function cargarCronograma() {
+        async function cargarCronograma() {
             const tbody = document.getElementById('cronogramaBody');
             tbody.innerHTML = '';
-            
-            cronogramaData.forEach(item => {
-                const fila = document.createElement('tr');
-                fila.className = 'hover:bg-gray-50 transition-colors';
-                const { fechaClase, alertaFecha } = getDateAlert(item.proximo, '¡Urgente!');
-                
-                fila.innerHTML = `
-                    ${createTableCell('Máquina', item.maquina, 'font-medium text-gray-900')}
-                    ${createTableCell('Marca/Modelo', item.marca)}
-                    ${createTableCell('Tarea', item.tarea)}
-                    ${createTableCell('Frecuencia', `<span class="status-badge bg-blue-100 text-blue-700">${item.frecuencia}</span>`)}
-                    ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${item.proximo}</span>${alertaFecha}`)}
-                    ${createTableCell('Responsable', item.responsable)}
-                    ${createTableCell('Estado', `<span class="status-badge status-${item.estado.toLowerCase()}">${item.estado}</span>`)}
-                `;
-                tbody.appendChild(fila);
-            });
-        }
-
-        // Navegación entre secciones
-        document.querySelectorAll('.nav-link, .bottom-nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const section = link.dataset.section;
-                
-                // Actualizar navegación activa
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                document.querySelectorAll('.bottom-nav-link').forEach(l => {
-                    l.classList.remove('text-green-700', 'active');
-                    l.classList.add('text-gray-500');
+            try {
+                const response = await fetch('/cronograma?user_id={{ id }}');
+                if (!response.ok) throw new Error('No se pudo cargar el cronograma');
+                const cronogramaData = await response.json();
+                cronogramaData.forEach(item => {
+                    const fila = document.createElement('tr');
+                    fila.className = 'hover:bg-gray-50 transition-colors';
+                    const { fechaClase, alertaFecha } = getDateAlert(item.proximo, '¡Urgente!');
+                    fila.innerHTML = `
+                        ${createTableCell('Máquina', item.maquina, 'font-medium text-gray-900')}
+                        ${createTableCell('Marca/Modelo', item.marca)}
+                        ${createTableCell('Tarea', item.tarea)}
+                        ${createTableCell('Frecuencia', `<span class="status-badge bg-blue-100 text-blue-700">${item.frecuencia}</span>`)}
+                        ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${item.proximo}</span>${alertaFecha}`)}
+                        ${createTableCell('Responsable', item.responsable)}
+                        ${createTableCell('Estado', `<span class="status-badge status-${item.estado.toLowerCase()}">${item.estado}</span>`)}
+                    `;
+                    tbody.appendChild(fila);
                 });
-                
-                if (link.classList.contains('nav-link')) {
-                    link.classList.add('active');
-                } else {
-                    link.classList.remove('text-gray-500');
-                    link.classList.add('text-green-700', 'active');
-                }
-                
-                // Actualizar contenido
-                document.querySelectorAll('.section-content').forEach(sec => sec.classList.add('hidden'));
-                document.getElementById(section + 'Section').classList.remove('hidden');
-                
-                // Actualizar título
-                const title = section === 'dashboard' ? 'Reportes' : 'Cronograma';
-                document.getElementById('pageTitle').textContent = title;
-            });
-        });
-
-        // Función de cerrar sesión
-        function handleLogout() {
-            // Crear modal de confirmación personalizado
-            const confirmModal = document.createElement('div');
-            confirmModal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
-            confirmModal.innerHTML = `
-                <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
-                    <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H9"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900">Cerrar Sesión</h3>
-                    </div>
-                    <p class="text-gray-600 mb-6">¿Está seguro que desea cerrar su sesión?</p>
-                    <div class="flex space-x-3">
-                        <button id="cancelLogout" class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
-                            Cancelar
-                        </button>
-                        <button id="confirmLogout" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                            Cerrar Sesión
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(confirmModal);
-            
-            // Event listeners para el modal
-            document.getElementById('cancelLogout').addEventListener('click', () => {
-                document.body.removeChild(confirmModal);
-            });
-            
-            document.getElementById('confirmLogout').addEventListener('click', () => {
-                // Aquí se puede agregar lógica para limpiar datos de sesión
-                // localStorage.clear();
-                // sessionStorage.clear();
-                
-                // Mostrar mensaje de despedida
-                const loadingDiv = document.createElement('div');
-                loadingDiv.className = 'fixed inset-0 bg-white flex items-center justify-center z-50';
-                loadingDiv.innerHTML = `
-                    <div class="text-center">
-                        <div class="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                        <p class="text-gray-600">Cerrando sesión...</p>
-                    </div>
-                `;
-                
-                document.body.removeChild(confirmModal);
-                document.body.appendChild(loadingDiv);
-                
-                // Redirigir después de un breve delay
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 1500);
-            });
-            
-            // Cerrar modal al hacer clic fuera
-            confirmModal.addEventListener('click', (e) => {
-                if (e.target === confirmModal) {
-                    document.body.removeChild(confirmModal);
-                }
-            });
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-red-600">Error al cargar cronograma</td></tr>';
+            }
         }
 
-        // Cerrar sesión desktop
-        const desktopLogoutBtn = document.querySelector('.text-red-300');
-        if (desktopLogoutBtn) {
-            desktopLogoutBtn.addEventListener('click', handleLogout);
-        }
-
-        // Cerrar sesión móvil
-        const mobileLogoutBtn = document.getElementById('mobileLogout');
-        if (mobileLogoutBtn) {
-            mobileLogoutBtn.addEventListener('click', handleLogout);
-        }
-
-        // Función para mostrar notificaciones toast
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            const colors = {
-                success: 'bg-green-500',
-                error: 'bg-red-500',
-                warning: 'bg-yellow-500',
-                info: 'bg-blue-500'
-            };
-            
-            toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
-            toast.textContent = message;
-            
-            document.body.appendChild(toast);
-            
-            // Mostrar toast
-            setTimeout(() => {
-                toast.classList.remove('translate-x-full');
-            }, 100);
-            
-            // Ocultar toast después de 3 segundos
-            setTimeout(() => {
-                toast.classList.add('translate-x-full');
-                setTimeout(() => {
-                    if (document.body.contains(toast)) {
-                        document.body.removeChild(toast);
-                    }
-                }, 300);
-            }, 3000);
-        }
-
-        // ================================
-        // GESTIÓN DE USUARIO Y UI
-        // ================================
-        
-        // Función unificada para inicialización del usuario
         function initializeUser() {
-            // Configurar saludo basado en la hora
             const hour = new Date().getHours();
             const greeting = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches';
-            
-            // Nombre del usuario (temporalmente hardcodeado, viene del backend)
-            const userName = 'Jhony';
-            
-            // Actualizar elementos de la interfaz
+            const userName = getUserName();
             const mobileGreeting = document.getElementById('mobileGreeting');
             const mobileUserName = document.getElementById('mobileUserName');
-            
             if (mobileGreeting) mobileGreeting.textContent = greeting;
             if (mobileUserName) mobileUserName.textContent = userName;
-            
-            // Mostrar toast de bienvenida solo en la primera carga
+            // Desktop
+            const desktopWelcome = document.querySelector('.hidden.lg\\:flex.justify-end.mb-4');
+            if (desktopWelcome) {
+                desktopWelcome.innerHTML = `Bienvenido, <span class="font-medium">${userName}</span>`;
+            }
             if (!sessionStorage.getItem('welcomeShown')) {
                 setTimeout(() => {
                     showToast(`¡Bienvenido de vuelta, ${userName}!`, 'success');
@@ -588,7 +401,6 @@
                     const searchTerm = this.value.toLowerCase();
                     const currentSection = document.querySelector('.section-content:not(.hidden)');
                     const rows = currentSection.querySelectorAll('tbody tr');
-                    
                     rows.forEach(row => {
                         const text = row.textContent.toLowerCase();
                         row.style.display = text.includes(searchTerm) ? '' : 'none';
@@ -597,17 +409,85 @@
             }
         }
 
-        // ================================
-        // INICIALIZACIÓN
-        // ================================
-        
-        // Cargar datos al iniciar
+        async function logoutAndRedirect() {
+            try {
+                await fetch('/logout', { credentials: 'include' }); // Elimina cookie en backend
+            } catch {}
+            // Intento eliminar la cookie también desde el frontend (solo para depuración)
+            document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            // Limpiar almacenamiento de sesión y localStorage
+            sessionStorage.clear();
+            localStorage.clear();
+            // Evitar volver atrás con el historial
+            window.location.replace('/');
+        }
+
+        // Protección extra: si no hay sesión, redirigir siempre al login
+        function checkSession() {
+            const username = '{{ username | safe }}';
+            if (!username || username === 'None' || username === '') {
+                sessionStorage.setItem('showLoginMessage', '1');
+                window.location.replace('/');
+            }
+        }
+
+        function handleLogout() {
+            const confirmModal = document.createElement('div');
+            confirmModal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+            confirmModal.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H9"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Cerrar Sesión</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6">¿Está seguro que desea cerrar su sesión?</p>
+                    <div class="flex space-x-3">
+                        <button id="cancelLogout" class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">Cancelar</button>
+                        <button id="confirmLogout" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Cerrar Sesión</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(confirmModal);
+            document.getElementById('cancelLogout').addEventListener('click', () => {
+                document.body.removeChild(confirmModal);
+            });
+            document.getElementById('confirmLogout').addEventListener('click', () => {
+                document.body.removeChild(confirmModal);
+                logoutAndRedirect();
+            });
+            confirmModal.addEventListener('click', (e) => {
+                if (e.target === confirmModal) {
+                    document.body.removeChild(confirmModal);
+                }
+            });
+        }
+
+        document.querySelectorAll('.btn-primary').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (btn.textContent.includes('Nuevo Reporte')) {
+                    window.location.href = '/reporte';
+                } else if (btn.textContent.includes('Nuevo Cronograma')) {
+                    window.location.href = '/cronograma';
+                }
+            });
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             initializeUser();
             cargarRegistros();
             cargarCronograma();
             setupSearch();
+            checkSession();
         });
+
+        const desktopLogoutBtn = document.querySelector('.text-red-300');
+        if (desktopLogoutBtn) desktopLogoutBtn.addEventListener('click', handleLogout);
+        const mobileLogoutBtn = document.getElementById('mobileLogout');
+        if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
     </script>
 </body>
 </html>

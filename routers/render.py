@@ -112,8 +112,8 @@ async def info_users(db: session):
 @router.get("/logout")
 async def logout(response: Response):
     """ Cierra sesion y elimina el token de acceso """
-    response.delete_cookie("access_token",path="/")
-    
-    return JSONResponse(content={
+    response = JSONResponse(content={
         "message": "Sesion cerrada correctamente"
     },status_code=200)
+    response.delete_cookie("access_token", path="/")
+    return response
