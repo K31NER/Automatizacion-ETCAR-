@@ -127,7 +127,7 @@ graph TD
 
 ## 🚀 Estado Actual del Desarrollo
 
-![Progreso](https://img.shields.io/badge/Progreso-15%25-red?style=for-the-badge)
+![Progreso](https://img.shields.io/badge/Progreso-25%25-red?style=for-the-badge)
 
 ### ✅ Completado
 - [x] Análisis de requerimientos empresariales
@@ -136,8 +136,8 @@ graph TD
 
 ### 🔄 En Desarrollo
 - [ ] Desarrollo de API REST con FastAPI
-- [ ] Diseño de base de datos
-- [ ] Implementación de autenticación
+- [x] Diseño de base de datos
+- [x] Implementación de autenticación
 - [ ] Desarrollo de interfaz móvil
 
 ### 📋 Próximas Fases
