@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse,StreamingResponse
 router = APIRouter(tags=["Reportes"])
 
 @router.post("/new_registration")
-async def save_registration(db:session,data: Create_report, user_id:int):
+async def save_registration(db:session,data: Create_report):
     """ Crea nuevos reportes de mantenimiento """
     # Validamos la entrada de tipo fecha
     try:
@@ -25,7 +25,7 @@ async def save_registration(db:session,data: Create_report, user_id:int):
     new_registration = Reporte(
         nombre_maquina = data.nombre_maquina,
         marca_modelo = data.marca,
-        responsable_id = user_id,
+        responsable_id = data.id,
         ubicacion = data.ubicacion,
         tipo_mantenimiento = data.tipo_mantenimiento,
         ultimo_mantenimiento = ultimo_mantenimiento,
@@ -38,11 +38,11 @@ async def save_registration(db:session,data: Create_report, user_id:int):
     db.refresh(new_registration)
     
     return JSONResponse(content={
-        "message": f"Registro del trabajador con id:{user_id} creado con exito"
+        "message": f"Registro del trabajador con id:{data.id} creado con exito"
     }, status_code=201)
     
 @router.post("/new_cronograma")
-async def save_cronograma(db:session,data: Create_cronograma, user_id:int):
+async def save_cronograma(db:session,data: Create_cronograma):
     """ Crea nuevos reportes de mantenimiento """
     # Validamos la entrada de tipo fecha
     try:
@@ -55,7 +55,7 @@ async def save_cronograma(db:session,data: Create_cronograma, user_id:int):
     new_registration = Cronograma(
         nombre_maquina = data.nombre_maquina,
         marca_modelo = data.marca,
-        responsable_id = user_id,
+        responsable_id = data.id,
         ubicacion = data.ubicacion,
         tarea_mantenimiento=data.tarea_mantenimiento,
         prox_mantenimiento = proximo_mantenimiento,
@@ -68,7 +68,7 @@ async def save_cronograma(db:session,data: Create_cronograma, user_id:int):
     db.refresh(new_registration)
     
     return JSONResponse(content={
-        "message": f"Cronograma del trabajador con id:{user_id} creado con exito"
+        "message": f"Cronograma del trabajador con id:{data.id} creado con exito"
     }, status_code=201)
     
 @router.get("/download_report")
