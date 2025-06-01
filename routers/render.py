@@ -88,14 +88,17 @@ async def admin(request:Request,user:dict = Depends(required_admin)):
             detail="No tienes acceso autorizado a esta página"
         )
         
-    return template.TemplateResponse("admin.html",{"request":request})
+    return template.TemplateResponse("admin.html",{"request":request,         
+     "id":user_id ,
+     "username": user_name,
+     "rol": user_role})
 
 @router.get("/listar_trabajadores")
 async def listar(db: session):
     """ Lista a todo los usuarios con rol de trabajador """
-    users = db.exec(select(User.id, User.nombre, User.cargo).where(User.cargo == "Trabajador")).all()
+    users = db.exec(select(User.id, User.nombre, User.cargo, User.correo).where(User.cargo == "Trabajador")).all()
     
-    users_list = [{"id": user[0],"nombre":user[1], "cargo": user[2]} for user in users]
+    users_list = [{"id": user[0],"nombre":user[1], "cargo": user[2], "correo": user[3]} for user in users]
     return users_list
 
 @router.get("/info_users")

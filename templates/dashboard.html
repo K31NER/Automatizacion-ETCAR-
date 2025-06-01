@@ -13,6 +13,12 @@
             overflow-x: hidden;
         }
         
+        /* Breakpoint personalizado para pantallas extra pequeñas */
+        @media (min-width: 475px) {
+            .xs\:flex { display: flex !important; }
+            .xs\:hidden { display: none !important; }
+        }
+        
         .dashboard-grid {
             grid-template-columns: 250px 1fr;
         }
@@ -68,6 +74,20 @@
             
             table.responsive-table td .status-badge {
                 margin-left: auto;
+            }
+            
+            /* Centrar estado vacío en móvil */
+            table.responsive-table tbody tr td[colspan] {
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                text-align: center !important;
+                padding: 2rem 1rem !important;
+                border: none !important;
+            }
+            
+            table.responsive-table tbody tr td[colspan]::before {
+                display: none !important;
             }
         }
         
@@ -141,8 +161,52 @@
             }
         }
         
+        /* Ajustes específicos para tablets */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .mobile-header > div:first-child {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            .mobile-header .search-mobile {
+                display: none; /* Ocultar búsqueda en tablets para dar más espacio */
+            }
+            
+            /* Reorganizar el layout interno para tablets */
+            .tablet-header-left {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .tablet-title-section {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+        
         /* Logo blanco para sidebar en pantallas grandes */
         #sidebar .sidebar-logo { filter: brightness(0) invert(1); }
+        
+        /* Animaciones personalizadas para iconos de tabla vacía */
+        .empty-state-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .empty-state-container {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .empty-state-container:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -179,32 +243,46 @@
         </aside>
         <!-- Contenido Principal -->
         <main class="p-3 lg:p-6 w-full">
-            <!-- Header optimizado para móvil -->
-            <div class="mobile-header">
-                <div>
-                    <!-- Información del usuario para móvil -->
-                    <div class="flex lg:hidden items-center justify-between mb-3">
-                        <div class="flex items-center space-x-2">
-                            <img src="/static/img/logo.png" alt="ETCAR" class="w-8 h-8 rounded-lg shadow-sm">
-                            <div class="flex flex-col">
-                                <span class="text-xs text-gray-500" id="mobileGreeting">Buenos días</span>
-                                <span class="text-sm font-medium text-green-700" id="mobileUserName">Jhony</span>
-                            </div>
+            <!-- Header para móviles y tablets -->
+            <div class="lg:hidden mb-6">
+                <!-- Fila 1: Usuario (izq), Título (centro), Logout (der) -->
+                <div class="grid grid-cols-3 items-center mb-4 gap-2">
+                    <!-- Usuario a la izquierda -->
+                    <div class="flex items-center space-x-2 justify-self-start">
+                        <img src="/static/img/logo.png" alt="ETCAR" class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg shadow-sm">
+                        <div class="hidden xs:flex flex-col">
+                            <span class="text-xs text-gray-500" id="mobileGreeting">Buenos días</span>
+                            <span class="text-xs sm:text-sm font-medium text-green-700" id="mobileUserName">Jhony</span>
                         </div>
-                        <button id="mobileLogout" class="flex items-center space-x-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors shadow-sm" title="Cerrar sesión">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H9"/>
-                            </svg>
-                            <span class="text-sm font-medium">Salir</span>
-                        </button>
                     </div>
                     
-                    <h1 class="text-xl lg:text-2xl font-bold text-green-800" id="pageTitle">Reportes</h1>
-                    <p class="text-sm text-gray-600 mt-1">Sistema de Gestión de Mantenimiento</p>
+                    <!-- Título centrado -->
+                    <div class="text-center justify-self-center">
+                        <h1 class="text-sm sm:text-lg md:text-xl font-bold text-green-800" id="pageTitle">Reportes</h1>
+                        <p class="text-xs text-gray-600 hidden sm:block">Sistema ETCAR</p>
+                    </div>
+                    
+                    <!-- Botón cerrar sesión a la derecha -->
+                    <div class="justify-self-end">
+                        <button id="mobileLogout" class="flex items-center space-x-1 px-2 py-2 sm:px-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors shadow-sm" title="Cerrar sesión">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H9"/>
+                            </svg>
+                            <span class="text-xs sm:text-sm font-medium">Salir</span>
+                        </button>
+                    </div>
                 </div>
                 
-                <!-- Búsqueda para móvil y desktop -->
-                <div class="search-mobile lg:max-w-sm">
+                <!-- Fila 2: Usuario móvil (solo en pantallas muy pequeñas) -->
+                <div class="flex xs:hidden items-center justify-center mb-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-gray-500" id="mobileGreeting2">Buenos días</span>
+                        <span class="text-sm font-medium text-green-700" id="mobileUserName2">Jhony</span>
+                    </div>
+                </div>
+                
+                <!-- Búsqueda -->
+                <div class="search-mobile">
                     <svg class="search-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
@@ -212,9 +290,32 @@
                 </div>
             </div>
             
-            <!-- Información del usuario (solo desktop) -->
-            <div class="hidden lg:flex justify-end mb-4">
-                <span class="text-gray-700">Bienvenido, <span class="font-medium">Jhony</span></span>
+            <!-- Header para desktop/portátiles -->
+            <div class="hidden lg:block mb-6">
+                <!-- Fila 1: Usuario (izq), Búsqueda (centro), Título (der) -->
+                <div class="grid grid-cols-3 items-center mb-4">
+                    <!-- Usuario a la izquierda (sin logo) -->
+                    <div class="flex flex-col justify-self-start">
+                        <span class="text-sm text-gray-500" id="desktopGreeting">Buenos días</span>
+                        <span class="text-lg font-medium text-green-700" id="desktopUserName">Jhony</span>
+                    </div>
+                    
+                    <!-- Búsqueda centrada -->
+                    <div class="justify-self-center w-full max-w-md">
+                        <div class="search-mobile">
+                            <svg class="search-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <input type="text" placeholder="Buscar registros..." class="search-input" id="searchInputDesktop">
+                        </div>
+                    </div>
+                    
+                    <!-- Título a la derecha (más pequeño) -->
+                    <div class="text-right justify-self-end">
+                        <h1 class="text-lg font-semibold text-green-800" id="desktopPageTitle">Reportes - Sistema de Gestión</h1>
+                        <p class="text-sm text-gray-500 mt-1">ETCAR</p>
+                    </div>
+                </div>
             </div>
             <!-- Secciones -->
             <div id="dashboardSection" class="section-content active">
@@ -239,7 +340,6 @@
                                     <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
                                     <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Último Mant.</th>
                                     <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Próximo Mant.</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
                                     <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Observaciones</th>
                                 </tr>
                             </thead>
@@ -272,7 +372,6 @@
                                     <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tarea</th>
                                     <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Frecuencia</th>
                                     <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Próximo Mant.</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
                                     <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                                 </tr>
                             </thead>
@@ -304,6 +403,24 @@
         function getUserName() {
             return '{{ username | safe }}';
         }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+                type === 'success' ? 'bg-green-500 text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 
+                'bg-blue-500 text-white'
+            }`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+        
         function isDateSoon(dateString) {
             const today = new Date();
             const targetDate = new Date(dateString.split('/').reverse().join('-'));
@@ -319,58 +436,95 @@
             const alertaFecha = isDateSoon(date) ? `<span class="ml-1 text-xs text-red-600">${alertText}</span>` : '';
             return { fechaClase, alertaFecha };
         }
+        function formatDateOnly(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString.split('T')[0];
+            return date.toISOString().split('T')[0];
+        }
 
         async function cargarRegistros() {
             const tbody = document.getElementById('registrosBody');
             tbody.innerHTML = '';
             try {
-                const response = await fetch('/reporte?user_id={{ id }}');
+                const response = await fetch(`/list_report_user?user_id={{ id }}`);
                 if (!response.ok) throw new Error('No se pudieron cargar los reportes');
-                const registros = await response.json();
+                const result = await response.json();
+                const registros = result.data || [];
                 registros.forEach(registro => {
                     const fila = document.createElement('tr');
                     fila.className = 'hover:bg-gray-50 transition-colors';
-                    const { fechaClase, alertaFecha } = getDateAlert(registro.proximo);
+                    const { fechaClase, alertaFecha } = getDateAlert(registro.proximo_mantenimiento);
                     fila.innerHTML = `
-                        ${createTableCell('Máquina', registro.maquina, 'font-medium text-gray-900')}
-                        ${createTableCell('Marca/Modelo', registro.marca)}
+                        ${createTableCell('Máquina', registro.nombre_maquina, 'font-medium text-gray-900')}
+                        ${createTableCell('Marca/Modelo', registro.marca_modelo)}
                         ${createTableCell('Ubicación', registro.ubicacion)}
-                        ${createTableCell('Tipo', `<span class="status-badge ${registro.tipo === 'Preventivo' ? 'status-preventivo' : 'status-correctivo'}">${registro.tipo}</span>`)}
-                        ${createTableCell('Último Mant.', registro.ultimo)}
-                        ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${registro.proximo}</span>${alertaFecha}`)}
-                        ${createTableCell('Responsable', registro.responsable)}
-                        ${createTableCell('Observaciones', registro.observaciones)}
+                        ${createTableCell('Tipo', `<span class="status-badge ${registro.tipo_mantenimiento === 'Preventivo' ? 'status-preventivo' : 'status-correctivo'}">${registro.tipo_mantenimiento}</span>`)}
+                        ${createTableCell('Último Mant.', formatDateOnly(registro.ultimo_mantenimiento))}
+                        ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${formatDateOnly(registro.proximo_mantenimiento)}</span>${alertaFecha}`)}
+                        ${createTableCell('Observaciones', registro.observacions)}
                     `;
                     tbody.appendChild(fila);
                 });
             } catch (e) {
-                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-red-600">Error al cargar reportes</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8">
+                    <div class="empty-state-container flex flex-col items-center justify-center space-y-3">
+                        <div class="empty-state-icon animate-bounce">
+                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-gray-500 text-lg font-medium">No hay reportes registrados</div>
+                        <div class="text-gray-400 text-sm">Comience agregando un nuevo reporte de mantenimiento</div>
+                    </div>
+                </td></tr>`;
             }
         }
+
         async function cargarCronograma() {
             const tbody = document.getElementById('cronogramaBody');
             tbody.innerHTML = '';
             try {
-                const response = await fetch('/cronograma?user_id={{ id }}');
+                const response = await fetch(`/list_cronograma_user?user_id={{ id }}`);
                 if (!response.ok) throw new Error('No se pudo cargar el cronograma');
-                const cronogramaData = await response.json();
+                const result = await response.json();
+                const cronogramaData = result.data || [];
                 cronogramaData.forEach(item => {
                     const fila = document.createElement('tr');
                     fila.className = 'hover:bg-gray-50 transition-colors';
-                    const { fechaClase, alertaFecha } = getDateAlert(item.proximo, '¡Urgente!');
+                    const { fechaClase, alertaFecha } = getDateAlert(item.prox_mantenimiento, '¡Urgente!');
+                    let estadoClass = '';
+                    if (item.estado) {
+                        if (item.estado.toLowerCase() === 'realizado') {
+                            estadoClass = 'bg-green-100 text-green-700 border border-green-200';
+                        } else if (item.estado.toLowerCase() === 'pendiente') {
+                            estadoClass = 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+                        } else if (item.estado.toLowerCase() === 'no realizado') {
+                            estadoClass = 'bg-red-100 text-red-700 border border-red-200';
+                        }
+                    }
                     fila.innerHTML = `
-                        ${createTableCell('Máquina', item.maquina, 'font-medium text-gray-900')}
-                        ${createTableCell('Marca/Modelo', item.marca)}
-                        ${createTableCell('Tarea', item.tarea)}
+                        ${createTableCell('Máquina', item.nombre_maquina, 'font-medium text-gray-900')}
+                        ${createTableCell('Marca/Modelo', item.marca_modelo)}
+                        ${createTableCell('Tarea', item.tarea_mantenimiento)}
                         ${createTableCell('Frecuencia', `<span class="status-badge bg-blue-100 text-blue-700">${item.frecuencia}</span>`)}
-                        ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${item.proximo}</span>${alertaFecha}`)}
-                        ${createTableCell('Responsable', item.responsable)}
-                        ${createTableCell('Estado', `<span class="status-badge status-${item.estado.toLowerCase()}">${item.estado}</span>`)}
+                        ${createTableCell('Próximo Mant.', `<span class="${fechaClase}">${formatDateOnly(item.prox_mantenimiento)}</span>${alertaFecha}`)}
+                        ${createTableCell('Estado', `<span class="status-badge ${estadoClass}">${item.estado}</span>`)}
                     `;
                     tbody.appendChild(fila);
                 });
             } catch (e) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-red-600">Error al cargar cronograma</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8">
+                    <div class="empty-state-container flex flex-col items-center justify-center space-y-3">
+                        <div class="empty-state-icon animate-pulse">
+                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-gray-500 text-lg font-medium">No hay cronogramas programados</div>
+                        <div class="text-gray-400 text-sm">Agregue un nuevo cronograma de mantenimiento</div>
+                    </div>
+                </td></tr>`;
             }
         }
 
@@ -378,15 +532,25 @@
             const hour = new Date().getHours();
             const greeting = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches';
             const userName = getUserName();
+            
+            // Móviles
             const mobileGreeting = document.getElementById('mobileGreeting');
             const mobileUserName = document.getElementById('mobileUserName');
+            const mobileGreeting2 = document.getElementById('mobileGreeting2');
+            const mobileUserName2 = document.getElementById('mobileUserName2');
+            
             if (mobileGreeting) mobileGreeting.textContent = greeting;
             if (mobileUserName) mobileUserName.textContent = userName;
+            if (mobileGreeting2) mobileGreeting2.textContent = greeting;
+            if (mobileUserName2) mobileUserName2.textContent = userName;
+            
             // Desktop
-            const desktopWelcome = document.querySelector('.hidden.lg\\:flex.justify-end.mb-4');
-            if (desktopWelcome) {
-                desktopWelcome.innerHTML = `Bienvenido, <span class="font-medium">${userName}</span>`;
-            }
+            const desktopGreeting = document.getElementById('desktopGreeting');
+            const desktopUserName = document.getElementById('desktopUserName');
+            
+            if (desktopGreeting) desktopGreeting.textContent = greeting;
+            if (desktopUserName) desktopUserName.textContent = userName;
+            
             if (!sessionStorage.getItem('welcomeShown')) {
                 setTimeout(() => {
                     showToast(`¡Bienvenido de vuelta, ${userName}!`, 'success');
@@ -396,15 +560,32 @@
         }
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
+            const searchInputDesktop = document.getElementById('searchInputDesktop');
+            
+            function handleSearch(searchTerm) {
+                const currentSection = document.querySelector('.section-content:not(.hidden)');
+                const rows = currentSection.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            }
+            
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     const searchTerm = this.value.toLowerCase();
-                    const currentSection = document.querySelector('.section-content:not(.hidden)');
-                    const rows = currentSection.querySelectorAll('tbody tr');
-                    rows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        row.style.display = text.includes(searchTerm) ? '' : 'none';
-                    });
+                    handleSearch(searchTerm);
+                    // Sincronizar con desktop
+                    if (searchInputDesktop) searchInputDesktop.value = this.value;
+                });
+            }
+            
+            if (searchInputDesktop) {
+                searchInputDesktop.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    handleSearch(searchTerm);
+                    // Sincronizar con móvil
+                    if (searchInput) searchInput.value = this.value;
                 });
             }
         }
@@ -466,13 +647,76 @@
             });
         }
 
-        document.querySelectorAll('.btn-primary').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                if (btn.textContent.includes('Nuevo Reporte')) {
-                    window.location.href = '/reporte';
-                } else if (btn.textContent.includes('Nuevo Cronograma')) {
-                    window.location.href = '/cronograma';
+        // --- SECCIÓN: Cambiar entre Reportes y Cronograma ---
+        function switchSection(section) {
+            // Oculta todas las secciones
+            document.querySelectorAll('.section-content').forEach(sec => sec.classList.add('hidden'));
+            // Muestra la sección seleccionada
+            if (section === 'dashboard') {
+                document.getElementById('dashboardSection').classList.remove('hidden');
+                document.getElementById('dashboardSection').classList.add('active');
+                document.getElementById('cronogramaSection').classList.remove('active');
+                
+                // Actualizar títulos móviles y desktop
+                const pageTitleMobile = document.getElementById('pageTitle');
+                const pageTitleDesktop = document.getElementById('desktopPageTitle');
+                if (pageTitleMobile) pageTitleMobile.textContent = 'Reportes';
+                if (pageTitleDesktop) pageTitleDesktop.textContent = 'Reportes - Sistema de Gestión';
+                
+            } else if (section === 'cronograma') {
+                document.getElementById('cronogramaSection').classList.remove('hidden');
+                document.getElementById('cronogramaSection').classList.add('active');
+                document.getElementById('dashboardSection').classList.remove('active');
+                
+                // Actualizar títulos móviles y desktop
+                const pageTitleMobile = document.getElementById('pageTitle');
+                const pageTitleDesktop = document.getElementById('desktopPageTitle');
+                if (pageTitleMobile) pageTitleMobile.textContent = 'Cronograma';
+                if (pageTitleDesktop) pageTitleDesktop.textContent = 'Cronograma - Sistema de Gestión';
+            }
+            // Actualiza el estado activo en sidebar
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.dataset.section === section) {
+                    link.classList.add('active', 'bg-green-800');
+                } else {
+                    link.classList.remove('active', 'bg-green-800');
                 }
+            });
+            // Actualiza el estado activo en barra inferior móvil
+            document.querySelectorAll('.bottom-nav-link').forEach(link => {
+                if (link.dataset.section === section) {
+                    link.classList.add('active', 'text-green-700');
+                    link.classList.remove('text-gray-500');
+                } else {
+                    link.classList.remove('active', 'text-green-700');
+                    link.classList.add('text-gray-500');
+                }
+            });
+        }
+
+        // Listeners para sidebar y barra móvil
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchSection(link.dataset.section);
+            });
+        });
+        document.querySelectorAll('.bottom-nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchSection(link.dataset.section);
+            });
+        });
+
+        // --- SECCIÓN: Botones de creación ---
+        document.querySelectorAll('#dashboardSection .btn-primary').forEach(btn => {
+            btn.addEventListener('click', () => {
+                window.location.href = '/reporte';
+            });
+        });
+        document.querySelectorAll('#cronogramaSection .btn-primary').forEach(btn => {
+            btn.addEventListener('click', () => {
+                window.location.href = '/cronograma';
             });
         });
 
@@ -484,9 +728,13 @@
             checkSession();
         });
 
+        // Event listeners para logout
         const desktopLogoutBtn = document.querySelector('.text-red-300');
-        if (desktopLogoutBtn) desktopLogoutBtn.addEventListener('click', handleLogout);
+        const desktopLogoutBtnNew = document.getElementById('desktopLogoutBtn');
         const mobileLogoutBtn = document.getElementById('mobileLogout');
+        
+        if (desktopLogoutBtn) desktopLogoutBtn.addEventListener('click', handleLogout);
+        if (desktopLogoutBtnNew) desktopLogoutBtnNew.addEventListener('click', handleLogout);
         if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
     </script>
 </body>
