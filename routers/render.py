@@ -1,10 +1,12 @@
 from sqlmodel import select
+from utils.clean_data import *
 from utils.credential import *
 from utils.manage_users import *
-from fastapi import APIRouter,Request, Response
+from models.reportes_model import *
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter,Request, Response
 
 router = APIRouter(tags=["Renderizado de html"])
 
@@ -109,6 +111,98 @@ async def info_users(db: session):
         "workes": Total_workers
     },status_code=200)
     
+@router.get("/list_report_user")
+async def list_reports_user(db: session, user_id: int):
+    """Devuelve todos los reportes de un usuario con el id proporcionado"""
+    
+    # Realizamos la consulta
+    query = select(Reporte).where(Reporte.responsable_id == user_id)
+    result = db.exec(query).all()
+    
+    # Validamos si existen los datos
+    if not result:
+        raise HTTPException(status_code=404,detail=f"No se encontraron reporte para este usuario")
+    
+    # Limpiamos los datos
+    clean_data = await clean_orm_data(result)
+    
+    # Cambiamos el formato de fecha
+    for data in clean_data:
+        if isinstance(data.get("ultimo_mantenimiento"), datetime):
+            data["ultimo_mantenimiento"] = data["ultimo_mantenimiento"].isoformat()
+        if isinstance(data.get("proximo_mantenimiento"), datetime):
+            data["proximo_mantenimiento"] = data["proximo_mantenimiento"].isoformat()
+
+    return JSONResponse(content={"data": clean_data}, status_code=200)
+
+@router.get("/list_cronograma_user")
+async def list_reports_user(db: session, user_id: int):
+    """Devuelve todos los cronograma de un usuario con el id proporcionado"""
+    
+    # Realizamos la consulata a la base de datos
+    query = select(Cronograma).where(Cronograma.responsable_id == user_id)
+    result = db.exec(query).all()
+    
+    # Validamos
+    if not result:
+        raise HTTPException(status_code=404,detail=f"No se encontraron cronogramas para este usuario")
+    
+    # Limpamos los datos
+    clean_data = await clean_orm_data(result)
+
+    # Cambiamos el formato de fecha
+    for data in clean_data:
+        if isinstance(data.get("prox_mantenimiento"), datetime):
+            data["prox_mantenimiento"] = data["prox_mantenimiento"].isoformat()
+            
+    return JSONResponse(content={"data": clean_data}, status_code=200)
+
+@router.get("/list_all_reports")
+async def list_all_reports(db:session):
+    """ Lista todos los reportes que estan en la base de datos """
+    
+    # Realizamos la consulta
+    query = select(Reporte)
+    result = db.exec(query).all()
+    
+    # Validamos
+    if not result:
+        raise JSONResponse(content={"message":"No se encontraron reporte"},status_code=404)
+    
+    # Limpiamos los datos
+    clean_data = await clean_orm_data(result)
+    
+    # Convertimos el formato de fecha
+    for data in clean_data:
+        if isinstance(data.get("ultimo_mantenimiento"), datetime):
+            data["ultimo_mantenimiento"] = data["ultimo_mantenimiento"].isoformat()
+        if isinstance(data.get("proximo_mantenimiento"), datetime):
+            data["proximo_mantenimiento"] = data["proximo_mantenimiento"].isoformat()
+            
+    return JSONResponse(content={"data": clean_data}, status_code=200)
+
+@router.get("/list_all_cronogramas")
+async def list_all_cronogramas(db: session):
+    """Devuelve todos los cronograma"""
+    
+    # Realizmos la consulta a la base de datos
+    query = select(Cronograma)
+    result = db.exec(query).all()
+    
+    # Validamos
+    if not result:
+        raise JSONResponse(content={"message":"No se encontraron cronogramas"},status_code=404)
+    
+    # Limpiamos los datos
+    clean_data = await clean_orm_data(result)
+    
+    # Cambiamos el formato de fecha
+    for data in clean_data:
+        if isinstance(data.get("prox_mantenimiento"), datetime):
+            data["prox_mantenimiento"] = data["prox_mantenimiento"].isoformat()
+            
+    return JSONResponse(content={"data": clean_data}, status_code=200)
+
 @router.get("/logout")
 async def logout(response: Response):
     """ Cierra sesion y elimina el token de acceso """
