@@ -522,10 +522,6 @@
             </div>
             
             <div class="mt-auto pt-6 border-t border-green-700/50">
-                <div class="mb-4 p-3 bg-white/5 rounded-lg">
-                    <p class="text-green-200 text-xs">Sesión activa</p>
-                    <p class="text-white font-medium">Admin</p>
-                </div>
                 <a href="#" id="desktopLogout" class="flex items-center space-x-3 p-3 rounded-xl text-red-300 hover:bg-red-500/20 hover:text-white transition-all duration-200 border border-red-300/20">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                     <span class="font-medium">Cerrar Sesión</span>
@@ -540,7 +536,7 @@
                 <div class="flex items-center justify-center space-x-2 mb-2">
                     <img src="/static/img/logo.png" alt="ETCAR Logo" class="w-6 h-6 filter brightness-0 invert">
                     <p class="text-white/90 text-sm font-medium">
-                        <span id="mobileGreeting">Bienvenido</span>, <span id="mobileAdminName">Admin</span>
+                        <span id="mobileGreeting">Bienvenido</span>, <span id="mobileAdminName">{{ username }}</span>
                     </p>
                 </div>
                 <h1 class="text-lg font-bold">Panel de Administración ETCAR</h1>
@@ -569,13 +565,13 @@
                         </div>
                         
                         <!-- User Info Desktop -->
-                        <div class="hidden lg:flex items-center space-x-3">
-                            <div class="text-right">
+                        <div class="flex items-center space-x-3">
+                            <div>
                                 <p class="text-sm text-gray-500" id="desktopGreeting">Buenos días</p>
-                                <p class="font-semibold text-gray-800">Admin</p>
+                                <p class="font-semibold text-gray-800" id="desktopAdminName">{{ username }}</p>
                             </div>
                             <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                                <span class="text-white font-semibold text-sm">A</span>
+                                <span class="text-white font-semibold text-sm">{{ username[0]|upper }}</span>
                             </div>
                         </div>
                     </div>
@@ -664,15 +660,10 @@
                         <table class="min-w-full responsive-table">
                             <thead>
                                 <tr>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        <div class="flex items-center space-x-1">
-                                            <span>ID</span>
-                                        </div>
-                                    </th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Usuario</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nombre</th>
                                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Rol</th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Estado</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cargo</th>
                                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Acciones</th>
                                 </tr>
                             </thead>
@@ -725,8 +716,8 @@
                                     </label>
                                     <select id="role" name="role" required class="form-input mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
                                         <option value="">Seleccionar rol</option>
-                                        <option value="trabajador">👷 Trabajador</option>
-                                        <option value="admin">👨‍💼 Administrador</option>
+                                        <option value="Trabajador">👷 Trabajador</option>
+                                        <option value="Administrador">👨‍💼 Administrador</option>
                                     </select>
                                 </div>
                             </div>
@@ -968,15 +959,6 @@
     </nav>
 
     <script>
-        // Mock data (simularía datos del backend)
-        let mockUsers = [
-            { id: 1, fullName: 'Andrés Pérez', email: 'andres@example.com', role: 'Trabajador', cronograma: [{ task: 'Mantenimiento A', date: '2025-06-10' }], reportes: [{ title: 'Reporte Mayo', items: 5 }] },
-            { id: 2, fullName: 'Sofía López', email: 'sofia@example.com', role: 'Supervisor', cronograma: [{ task: 'Revisión Equipos', date: '2025-06-12' }], reportes: [{ title: 'Reporte Mayo Sup.', items: 3 }] },
-            { id: 3, fullName: 'Carlos Vera', email: 'carlos@example.com', role: 'Trabajador', cronograma: [], reportes: [] },
-        ];
-
-        const currentAdminName = 'Admin'; // Podría venir del backend
-
         // DOM Elements
         const sections = {
             viewUsers: document.getElementById('viewUsersSection'),
@@ -1060,146 +1042,93 @@
             }, 3000);
         }
 
-        // Render Users Table
-        function renderUsersTable(usersToRender = mockUsers) {
-            usersTableBody.innerHTML = '';
-            
-            // Update statistics
-            updateUserStats(usersToRender);
-            
-            if (usersToRender.length === 0) {
-                noUsersMessage.classList.remove('hidden');
-                return;
+        // --- NUEVO: Mostrar estadísticas reales de usuarios ---
+        async function fetchUserStats() {
+            try {
+                const res = await fetch('/info_users');
+                if (!res.ok) throw new Error('No se pudo obtener la información de usuarios');
+                const data = await res.json();
+                document.getElementById('totalUsers').textContent = data.users;
+                document.getElementById('adminUsers').textContent = data.admins;
+                document.getElementById('workerUsers').textContent = data.workes;
+            } catch (e) {
+                document.getElementById('totalUsers').textContent = '-';
+                document.getElementById('adminUsers').textContent = '-';
+                document.getElementById('workerUsers').textContent = '-';
             }
-            noUsersMessage.classList.add('hidden');
-
-            usersToRender.forEach(user => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50/50 transition-all duration-200';
-                
-                const roleColors = {
-                    'admin': 'bg-red-100 text-red-800',
-                    'supervisor': 'bg-blue-100 text-blue-800', 
-                    'trabajador': 'bg-green-100 text-green-800'
-                };
-                
-                const roleIcons = {
-                    'admin': '⚡',
-                    'supervisor': '👨‍💼',
-                    'trabajador': '👷'
-                };
-                
-                row.innerHTML = `
-                    <td data-label="ID" class="px-6 py-4 text-sm font-medium text-gray-700">
-                        <span class="inline-flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full text-xs font-bold">${user.id}</span>
-                    </td>
-                    <td data-label="Usuario" class="px-6 py-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                                <span class="text-white font-semibold text-sm">${user.fullName.charAt(0)}</span>
-                            </div>
-                            <div>
-                                <div class="text-sm font-semibold text-gray-900">${user.fullName}</div>
-                                <div class="text-xs text-gray-500">Usuario activo</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td data-label="Email" class="px-6 py-4 text-sm text-gray-600">${user.email}</td>
-                    <td data-label="Rol" class="px-6 py-4">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${roleColors[user.role.toLowerCase()] || 'bg-gray-100 text-gray-800'}">
-                            ${roleIcons[user.role.toLowerCase()] || '👤'} ${user.role}
-                        </span>
-                    </td>
-                    <td data-label="Estado" class="px-6 py-4">
-                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                            Activo
-                        </span>
-                    </td>
-                    <td data-label="Acciones" class="px-6 py-4">
-                        <button data-userid="${user.id}" class="view-details-btn inline-flex items-center px-3 py-2 text-sm font-medium text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            Ver Detalles
-                        </button>
-                    </td>
-                `;
-                usersTableBody.appendChild(row);
-            });
-            
-            document.querySelectorAll('.view-details-btn').forEach(btn => {
-                btn.addEventListener('click', () => openUserDetailsModal(parseInt(btn.dataset.userid)));
-            });
         }
 
-        // Update User Statistics
-        function updateUserStats(users = mockUsers) {
-            const totalUsers = users.length;
-            const adminUsers = users.filter(u => u.role.toLowerCase() === 'admin').length;
-            const workerUsers = users.filter(u => u.role.toLowerCase() === 'trabajador').length;
-            
-            document.getElementById('totalUsers').textContent = totalUsers;
-            document.getElementById('adminUsers').textContent = adminUsers;
-            document.getElementById('workerUsers').textContent = workerUsers;
+        // --- NUEVO: Mostrar saludo con nombre real del admin ---
+        function initializeAdminPanel() {
+            const hour = new Date().getHours();
+            const greeting = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches';
+            // Desktop
+            const desktopGreeting = document.getElementById('desktopGreeting');
+            if (desktopGreeting) desktopGreeting.textContent = greeting;
+            const desktopAdminName = document.getElementById('desktopAdminName');
+            if (desktopAdminName) desktopAdminName.textContent = '{{ username }}';
+            // Mobile
+            const mobileGreeting = document.getElementById('mobileGreeting');
+            const mobileAdminName = document.getElementById('mobileAdminName');
+            if (mobileGreeting) mobileGreeting.textContent = greeting;
+            if (mobileAdminName) mobileAdminName.textContent = '{{ username }}';
+            if (!sessionStorage.getItem('adminWelcomeShown')) {
+                setTimeout(() => {
+                    showToast(`¡Bienvenido al Panel de Administración, {{ username }}!`, 'success');
+                    sessionStorage.setItem('adminWelcomeShown', 'true');
+                }, 1000);
+            }
+            fetchUserStats();
+            populateYearSelect();
+            populateMonthSelect();
         }
 
         // Populate PDF User Select
         function populatePdfUserSelect() {
             pdfUserSelect.innerHTML = '<option value="" disabled selected>Seleccione un usuario</option>';
-            mockUsers.forEach(user => {
-                const option = document.createElement('option');
-                option.value = user.id;
-                option.textContent = user.fullName;
-                pdfUserSelect.appendChild(option);
-            });
         }
 
-        // Open User Details Modal
-        function openUserDetailsModal(userId) {
-            const user = mockUsers.find(u => u.id === userId);
-            if (!user) return;
-
-            let cronogramaHtml = '<p class="text-sm text-gray-500">No hay datos de cronograma.</p>';
-            if (user.cronograma && user.cronograma.length > 0) {
-                cronogramaHtml = '<ul class="list-disc list-inside space-y-1">';
-                user.cronograma.forEach(item => {
-                    cronogramaHtml += `<li class="text-sm">${item.task} - Fecha: ${item.date}</li>`;
-                });
-                cronogramaHtml += '</ul>';
-            }
-
-            let reportesHtml = '<p class="text-sm text-gray-500">No hay reportes.</p>';
-            if (user.reportes && user.reportes.length > 0) {
-                reportesHtml = '<ul class="list-disc list-inside space-y-1">';
-                user.reportes.forEach(item => {
-                    reportesHtml += `<li class="text-sm">${item.title} (${item.items} ítems)</li>`;
-                });
-                reportesHtml += '</ul>';
-            }
-
-            userDetailsContent.innerHTML = `
-                <p><strong>ID:</strong> ${user.id}</p>
-                <p><strong>Nombre:</strong> ${user.fullName}</p>
-                <p><strong>Email:</strong> ${user.email}</p>
-                <p><strong>Rol:</strong> ${user.role}</p>
-                <div class="mt-4">
-                    <h5 class="font-semibold text-gray-700 mb-1">Cronograma (Simulado):</h5>
-                    ${cronogramaHtml}
-                </div>
-                <div class="mt-3">
-                    <h5 class="font-semibold text-gray-700 mb-1">Reportes (Simulado):</h5>
-                    ${reportesHtml}
-                </div>
-            `;
-            userDetailsModal.classList.add('active');
-        }
-
-        // Close User Details Modal
-        closeUserDetailsModalBtn.addEventListener('click', () => userDetailsModal.classList.remove('active'));
-        userDetailsModal.addEventListener('click', (e) => {
-            if (e.target === userDetailsModal) userDetailsModal.classList.remove('active');
-        });
-        
         // Section Navigation
+        async function renderUsersTable() {
+            usersTableBody.innerHTML = '';
+            try {
+                const res = await fetch('/listar_trabajadores');
+                if (!res.ok) throw new Error('No se pudo obtener la lista de usuarios');
+                const users = await res.json();
+                if (!users.length) {
+                    noUsersMessage.classList.remove('hidden');
+                    return;
+                }
+                noUsersMessage.classList.add('hidden');
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50/50 transition-all duration-200';
+                    row.innerHTML = `
+                        <td class="px-6 py-4 text-sm font-medium text-gray-700">${user.id}</td>
+                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">${user.nombre}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${user.correo || ''}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${user.cargo}</td>
+                        <td class="px-6 py-4">
+                            <button data-userid="${user.id}" class="view-details-btn inline-flex items-center px-3 py-2 text-sm font-medium text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                Ver Detalles
+                            </button>
+                        </td>
+                    `;
+                    usersTableBody.appendChild(row);
+                });
+                // Asignar evento a los botones de ver detalles
+                document.querySelectorAll('.view-details-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        openUserDetailsModal(parseInt(this.dataset.userid));
+                    });
+                });
+            } catch (e) {
+                noUsersMessage.classList.remove('hidden');
+                usersTableBody.innerHTML = '';
+            }
+        }
+
         function switchSection(sectionName) {
             Object.values(sections).forEach(section => section.classList.remove('active'));
             navLinks.forEach(link => link.classList.remove('active'));
@@ -1257,6 +1186,7 @@
             if (searchContainer) {
                 if (sectionName === 'viewUsers') {
                     searchContainer.classList.remove('hidden');
+                    renderUsersTable();
                 } else {
                     searchContainer.classList.add('hidden');
                 }
@@ -1314,40 +1244,8 @@
                     mobileSearchResults.classList.add('hidden');
                 }
             }
-            
-            const filteredUsers = mockUsers.filter(user => 
-                user.fullName.toLowerCase().includes(searchTerm) ||
-                user.email.toLowerCase().includes(searchTerm) ||
-                user.role.toLowerCase().includes(searchTerm) ||
-                'activo'.includes(searchTerm) || // Estado siempre es activo en el mock
-                (user.role === 'admin' && 'administrador'.includes(searchTerm)) ||
-                (user.role === 'trabajador' && 'trabajador'.includes(searchTerm))
-            );
-            
-            // Update search results count
-            if (searchTerm.trim() !== '' && window.innerWidth <= 1024) {
-                searchResultsCount.textContent = filteredUsers.length;
-            }
-            
-            renderUsersTable(filteredUsers);
-            
-            // Auto-scroll to table on mobile only after user stops typing for 800ms
-            if (searchTerm.trim() !== '' && filteredUsers.length > 0 && window.innerWidth <= 1024) {
-                searchTimeout = setTimeout(() => {
-                    const tableContainer = document.querySelector('.table-container');
-                    if (tableContainer && !searchInput.matches(':focus')) {
-                        // Only scroll if the input is not focused (user finished typing)
-                        tableContainer.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'start',
-                            inline: 'nearest'
-                        });
-                    }
-                }, 800); // Wait 800ms after user stops typing
-            }
         });
 
-        // Clear Search Button for Mobile
         const clearSearchMobile = document.getElementById('clearSearchMobile');
         if (clearSearchMobile) {
             clearSearchMobile.addEventListener('click', () => {
@@ -1370,16 +1268,9 @@
                     statsCardsContainer.classList.remove('mobile-hidden');
                     mobileSearchResults.classList.add('hidden');
                 }
-                
-                // Show all users
-                renderUsersTable(mockUsers);
-                
-                // Focus back to search input for better UX
-                userSearchInput.focus();
             });
         }
 
-        // Password Visibility Toggle
         if (togglePasswordVisibilityButton && passwordInput && eyeIcon && eyeSlashIcon) {
             togglePasswordVisibilityButton.addEventListener('click', () => {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -1389,25 +1280,34 @@
             });
         }
 
-        // Register User Form Submission
-        registerUserForm.addEventListener('submit', (e) => {
+        registerUserForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(registerUserForm);
-            const newUser = {
-                id: mockUsers.length > 0 ? Math.max(...mockUsers.map(u => u.id)) + 1 : 1,
-                fullName: formData.get('fullName'),
-                email: formData.get('email'),
-                role: formData.get('role'),
-                signatureFilename: formData.get('signature') ? formData.get('signature').name : null, // Store filename for mock
-                cronograma: [],
-                reportes: []
-            };
-            mockUsers.push(newUser);
-            renderUsersTable();
-            populatePdfUserSelect();
-            showToast('Usuario registrado exitosamente.', 'success');
-            registerUserForm.reset();
-            switchSection('viewUsers'); // Switch back to user list
+            const mappedFormData = new FormData();
+            mappedFormData.append('name', formData.get('fullName'));
+            mappedFormData.append('rol', formData.get('role'));
+            mappedFormData.append('email', formData.get('email'));
+            mappedFormData.append('password', formData.get('password'));
+            if (formData.get('signature') && formData.get('signature').size > 0) {
+                mappedFormData.append('firma', formData.get('signature'));
+            }
+            try {
+                const res = await fetch('/signup', {
+                    method: 'POST',
+                    body: mappedFormData
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('Usuario registrado exitosamente.', 'success');
+                    registerUserForm.reset();
+                    switchSection('viewUsers'); // Volver a la lista
+                    renderUsersTable(); // Refrescar tabla
+                } else {
+                    showToast(data.message || 'Error al registrar usuario', 'error');
+                }
+            } catch (err) {
+                showToast('Error de red al registrar usuario', 'error');
+            }
         });
 
         // Generate PDF Form Submission
@@ -1423,10 +1323,8 @@
                 showToast('Por favor complete todos los campos.', 'error');
                 return;
             }
-            const user = mockUsers.find(u => u.id == selectedUserId);
             const selectedMonthText = pdfMonthNameSelect.options[pdfMonthNameSelect.selectedIndex].text;
-            showToast(`Simulando generación de PDF (${reportType}) para ${user.fullName} de ${selectedMonthText} ${selectedYear}.`, 'info');
-            // Actual PDF generation logic would go here
+            showToast(`Simulando generación de PDF (${reportType}) para el usuario seleccionado de ${selectedMonthText} ${selectedYear}.`, 'info');
             generatePdfForm.reset();
             // Reset dropdowns to current month/year after submission
             const currentDate = new Date();
@@ -1451,47 +1349,25 @@
             document.body.appendChild(confirmModal);
 
             document.getElementById('cancelLogout').addEventListener('click', () => confirmModal.remove());
-            document.getElementById('confirmLogout').addEventListener('click', () => {
+            document.getElementById('confirmLogout').addEventListener('click', async () => {
                 showToast('Cerrando sesión...', 'info');
-                setTimeout(() => {
-                     window.location.href = '/login'; // Or your actual logout URL
-                }, 1500);
+                try {
+                    const res = await fetch('/logout', { method: 'GET', credentials: 'include' });
+                    if (res.ok) {
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 1000);
+                    } else {
+                        showToast('Error al cerrar sesión', 'error');
+                    }
+                } catch (err) {
+                    showToast('Error de red al cerrar sesión', 'error');
+                }
+                confirmModal.remove();
             });
         }
         if(desktopLogoutBtn) desktopLogoutBtn.addEventListener('click', handleLogout);
         if(mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
-
-
-        // Initial Setup
-        function initializeAdminPanel() {
-            const hour = new Date().getHours();
-            const greeting = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches';
-            
-            // Update greeting in desktop header
-            const desktopGreeting = document.getElementById('desktopGreeting');
-            if (desktopGreeting) {
-                desktopGreeting.textContent = greeting;
-            }
-
-            // Update mobile greeting and admin name
-            const mobileGreeting = document.getElementById('mobileGreeting');
-            const mobileAdminName = document.getElementById('mobileAdminName');
-            if (mobileGreeting) {
-                mobileGreeting.textContent = greeting;
-            }
-            if (mobileAdminName) {
-                mobileAdminName.textContent = currentAdminName;
-            }
-
-            if (!sessionStorage.getItem('adminWelcomeShown')) {
-                showToast(`¡Bienvenido al Panel de Administración, ${currentAdminName}!`, 'success');
-                sessionStorage.setItem('adminWelcomeShown', 'true');
-            }
-            
-            populateYearSelect();
-            populateMonthSelect();
-            updateUserStats(); // Initialize statistics
-        }
 
         function populateYearSelect() {
             if (!pdfYearSelect) return;
@@ -1533,7 +1409,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initializeAdminPanel();
-            renderUsersTable();
             populatePdfUserSelect();
             switchSection('viewUsers'); // Default section
         });
