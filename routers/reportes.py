@@ -152,6 +152,9 @@ async def download_pdf_report(db:session,user_id:int,admin_id:int):
     query_admin = select(User).where(User.id == admin_id)
     firma_admin = db.exec(query_admin).first()
     
+    if not firma_user or not firma_admin:
+        raise HTTPException(status_code=404,detail=f"No se encontraron firmas")
+    
     # 2. Firmas formateadas
     firmas = []
     for u in [firma_user, firma_admin]:
