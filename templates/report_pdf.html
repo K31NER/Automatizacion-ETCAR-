@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            font-size: 11px; 
+            margin: 20px;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            margin: 20px 0;
+            border: 2px solid #3498db;
+            table-layout: fixed;
+        }
+        
+        th { 
+            background-color: #3498db;
+            color: white; 
+            padding: 4px 2px; 
+            text-align: center; 
+            font-weight: bold;
+            font-size: 9px;
+            border: 1px solid #2980b9;
+            word-wrap: break-word;
+            overflow: hidden;
+            vertical-align: middle;
+        }
+        
+        td { 
+            padding: 3px 2px;
+            text-align: center; 
+            border: 1px solid #bdc3c7;
+            font-size: 8px;
+            word-wrap: break-word;
+            overflow: hidden;
+            vertical-align: middle;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .firmas-container { 
+            margin-top: 80px; 
+            width: 100%;
+        }
+        
+        .firmas-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: none;
+        }
+        
+        .firmas-table td {
+            width: 50%;
+            text-align: center;
+            vertical-align: top;
+            padding: 20px;
+            border: none;
+        }
+        
+        .firma { 
+            text-align: center; 
+            border: 1px solid #bdc3c7;
+            padding: 15px;
+            margin: 0 10px;
+        }
+        
+        .firma img { 
+            width: 120px;
+            height: 70px;
+            border: 1px solid #bdc3c7;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+        
+        .firma p {
+            margin: 10px 0 0 0;
+            font-weight: bold;
+            font-size: 12px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+        }
+        
+        .linea-firma {
+            border-top: 1px solid #000;
+            width: 80%;
+            margin: 5px auto 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">Reporte de Maquinaria</h2>
+    <table>
+        <thead>
+            <tr>
+                {% for col in columnas %}
+                    <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for fila in filas %}
+                <tr>
+                    {% for celda in fila %}
+                        <td>{{ celda }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="firmas-container">
+        <table class="firmas-table">
+            <tr>
+                {% for firma in firmas %}
+                <td>
+                    <div class="firma">
+                        <img src="data:image/png;base64,{{ firma.imagen_base64 }}" alt="Firma">
+                        <p>{{ firma.nombre }}</p>
+                        <div class="linea-firma"></div>
+                    </div>
+                </td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

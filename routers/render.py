@@ -170,7 +170,7 @@ async def list_all_reports(db:session):
     
     # Validamos
     if not result:
-        raise JSONResponse(content={"message":"No se encontraron reporte"},status_code=404)
+        raise HTTPException(status_code=404, detail="No se encontraron reportes")
     
     # Limpiamos los datos
     clean_data = await clean_orm_data(result)
@@ -194,7 +194,7 @@ async def list_all_cronogramas(db: session):
     
     # Validamos
     if not result:
-        raise JSONResponse(content={"message":"No se encontraron cronogramas"},status_code=404)
+        raise HTTPException(status_code=404, detail="No se encontraron cronogramas")
     
     # Limpiamos los datos
     clean_data = await clean_orm_data(result)
@@ -206,6 +206,41 @@ async def list_all_cronogramas(db: session):
             
     return JSONResponse(content={"data": clean_data}, status_code=200)
 
+@router.get("/user_details")
+async def user_details(db:session,user_id:int):
+    """ Devuelve la informacion del usuario """
+    
+    # Obtenemos los reportes
+    query_report = select(Reporte).where(Reporte.responsable_id == user_id)
+    result_report = db.exec(query_report).all()
+    
+    # Obtenemos los cronogramas
+    query_cronograma = select(Cronograma).where(Cronograma.responsable_id == user_id)
+    result_cronograma = db.exec(query_cronograma).all()
+    
+    # Validamos
+    if not result_report or not result_cronograma:
+        raise HTTPException(status_code=404, detail="No se encontraron datos")
+    # Limpiamos los datos
+    reports = await clean_orm_data(result_report)
+    cronogramas = await clean_orm_data(result_cronograma)
+    
+    # Convertimos el formato de fecha
+    for data in reports:
+        if isinstance(data.get("ultimo_mantenimiento"), datetime):
+            data["ultimo_mantenimiento"] = data["ultimo_mantenimiento"].isoformat()
+        if isinstance(data.get("proximo_mantenimiento"), datetime):
+            data["proximo_mantenimiento"] = data["proximo_mantenimiento"].isoformat()
+            
+    for data in cronogramas:
+        if isinstance(data.get("prox_mantenimiento"), datetime):
+            data["prox_mantenimiento"] = data["prox_mantenimiento"].isoformat()
+            
+    return JSONResponse(content={
+        "reports": reports,
+        "cronogramas": cronogramas
+    })
+    
 @router.get("/logout")
 async def logout(response: Response):
     """ Cierra sesion y elimina el token de acceso """
