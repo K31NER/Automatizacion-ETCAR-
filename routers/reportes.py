@@ -192,7 +192,7 @@ async def download_pdf_report(db:session,user_id:int,admin_id:int):
     }, inplace=True)
     
     # Generamos el pdf
-    pdf_bytes = generar_pdf_reporte(df,firmas)
+    pdf_bytes = generar_pdf(df,firmas,"Reporte de maquinaria")
     buffer = BytesIO(pdf_bytes)
     
     # 6. Retornar el PDF como descarga
@@ -200,4 +200,55 @@ async def download_pdf_report(db:session,user_id:int,admin_id:int):
         buffer,
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename=reporte_usuario_{user_id}.pdf"}
+    )
+    
+@router.get("/download_cronograma_pdf")
+async def download_pdf_report(db:session,user_id:int,admin_id:int):
+    """ Crea el pdf en base a los cronogramas del usuario y pone las firmas"""
+    
+    # Obtenemos las firmas
+    query_user = select(User).where(User.id == user_id)
+    firma_user = db.exec(query_user).first()
+    
+    query_admin = select(User).where(User.id == admin_id)
+    firma_admin = db.exec(query_admin).first()
+    
+    if not firma_user or not firma_admin:
+        raise HTTPException(status_code=404,detail=f"No se encontraron firmas")
+    
+    # 2. Firmas formateadas
+    firmas = []
+    for u in [firma_user, firma_admin]:
+        if not u.firma:
+            raise HTTPException(status_code=400, detail=f"El usuario {u.nombre} no tiene firma registrada.")
+        firmas.append({
+            "nombre": u.nombre,
+            "imagen_base64": firma_bytes_a_base64(u.firma)
+        })
+    
+    # Obtenemos los datos
+    query_cronograma = select(Cronograma).where(Cronograma.responsable_id == user_id)
+    cronogramas = db.exec(query_cronograma)
+    
+    # Validamos los datos 
+    if not cronogramas:
+        raise HTTPException(status_code=404,detail=f"No se encontraron cronogramas para el usuario con id:{user_id}")
+    
+    # Limpiamos la informacion
+    data_clean = await clean_orm_data(cronogramas)
+    
+    # Volvemos dataframe
+    df = pd.DataFrame(data_clean)
+    
+    # Quitamos columnas innecesarias
+    df.drop(columns=["id","responsable_id"],inplace=True)
+    # Generamos el pdf
+    pdf_bytes = generar_pdf(df,firmas,"Cronograma de maquinaria")
+    buffer = BytesIO(pdf_bytes)
+    
+    # 6. Retornar el PDF como descarga
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=cronograma_usuario_{user_id}.pdf"}
     )
