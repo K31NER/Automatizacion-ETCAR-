@@ -9,7 +9,7 @@ env = Environment(loader=FileSystemLoader("templates"))
 def firma_bytes_a_base64(firma_bytes: bytes) -> str:
     return base64.b64encode(firma_bytes).decode("utf-8")
 
-def generar_pdf_reporte(df: pd.DataFrame, firmas: list[dict]) -> bytes:
+def generar_pdf(df: pd.DataFrame, firmas: list[dict],title:str) -> bytes:
     """
     Genera un PDF a partir del DataFrame y lista de firmas.
     
@@ -17,6 +17,7 @@ def generar_pdf_reporte(df: pd.DataFrame, firmas: list[dict]) -> bytes:
     """
     template = env.get_template("report_pdf.html")
     html_content = template.render(
+        title = title,
         columnas=df.columns,
         filas=df.values.tolist(),
         firmas=firmas
