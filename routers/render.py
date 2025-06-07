@@ -86,8 +86,11 @@ async def admin(request:Request,user:dict = Depends(required_admin)):
             detail="No tienes acceso autorizado a esta página"
         )
         
-    return template.TemplateResponse("admin.html",{"request":request,         
-     "id":user_id ,
-     "username": user_name,
-     "rol": user_role})
+    # Pasa admin_id explícitamente para el template
+    return template.TemplateResponse("admin.html",{
+        "request":request,
+        "admin_id": user_id,
+        "username": user_name,
+        "rol": user_role
+    })
 
