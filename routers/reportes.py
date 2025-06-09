@@ -2,7 +2,8 @@ import pandas as pd
 from io import BytesIO
 from utils.pdf import *
 from schemas.report import *
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 from utils.credential import *
 from utils.clean_data import *
 from utils.manage_users import *
@@ -252,3 +253,75 @@ async def download_pdf_report(db:session,user_id:int,admin_id:int):
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename=cronograma_usuario_{user_id}.pdf"}
     )
+
+# EDITAR REPORTE
+@router.put("/edit_report/{id}")
+async def edit_report(id: int, data: Create_report, db: session):
+    reporte = db.get(Reporte, id)
+    if not reporte:
+        raise HTTPException(status_code=404, detail="Reporte no encontrado")
+    try:
+        reporte.nombre_maquina = data.nombre_maquina
+        reporte.marca_modelo = data.marca
+        reporte.responsable_id = data.id
+        reporte.ubicacion = data.ubicacion
+        reporte.tipo_mantenimiento = data.tipo_mantenimiento
+        reporte.ultimo_mantenimiento = datetime.fromisoformat(data.fecha_ultimo)
+        reporte.proximo_mantenimiento = datetime.fromisoformat(data.fecha_proximo)
+        reporte.observacions = data.observaciones
+        db.commit()
+        db.refresh(reporte)
+        return JSONResponse(content={"message": "Reporte actualizado correctamente"}, status_code=200)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error al actualizar: {str(e)}")
+
+# ELIMINAR REPORTE
+@router.delete("/delete_report/{id}")
+async def delete_report(id: int, db: session):
+    reporte = db.get(Reporte, id)
+    if not reporte:
+        raise HTTPException(status_code=404, detail="Reporte no encontrado")
+    try:
+        db.delete(reporte)
+        db.commit()
+        return JSONResponse(content={"message": "Reporte eliminado correctamente"}, status_code=200)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error al eliminar: {str(e)}")
+
+# EDITAR CRONOGRAMA
+@router.put("/edit_cronograma/{id}")
+async def edit_cronograma(id: int, data: Create_cronograma, db: session):
+    cronograma = db.get(Cronograma, id)
+    if not cronograma:
+        raise HTTPException(status_code=404, detail="Cronograma no encontrado")
+    try:
+        cronograma.nombre_maquina = data.nombre_maquina
+        cronograma.marca_modelo = data.marca
+        cronograma.responsable_id = data.id
+        cronograma.ubicacion = data.ubicacion
+        cronograma.tarea_mantenimiento = data.tarea_mantenimiento
+        cronograma.prox_mantenimiento = datetime.fromisoformat(data.fecha_proximo)
+        cronograma.estado = data.estado
+        cronograma.frecuencia = data.frecuencia
+        db.commit()
+        db.refresh(cronograma)
+        return JSONResponse(content={"message": "Cronograma actualizado correctamente"}, status_code=200)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error al actualizar: {str(e)}")
+
+# ELIMINAR CRONOGRAMA
+@router.delete("/delete_cronograma/{id}")
+async def delete_cronograma(id: int, db: session):
+    cronograma = db.get(Cronograma, id)
+    if not cronograma:
+        raise HTTPException(status_code=404, detail="Cronograma no encontrado")
+    try:
+        db.delete(cronograma)
+        db.commit()
+        return JSONResponse(content={"message": "Cronograma eliminado correctamente"}, status_code=200)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error al eliminar: {str(e)}")
