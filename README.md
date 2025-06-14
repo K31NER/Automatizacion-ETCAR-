@@ -3,7 +3,7 @@
 ![Prototipo](https://img.shields.io/badge/Estado-Prototipo-orange?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![En Desarrollo](https://img.shields.io/badge/Fase-Desarrollo_Inicial-yellow?style=for-the-badge)
+![En Desarrollo](https://img.shields.io/badge/Fase-MVP_terminado-blue?style=for-the-badge)
 
 ---
 
@@ -127,25 +127,25 @@ graph TD
 
 ## 🚀 Estado Actual del Desarrollo
 
-![Progreso](https://img.shields.io/badge/Progreso-25%25-red?style=for-the-badge)
+![Progreso](https://img.shields.io/badge/Progreso-70%25-green?style=for-the-badge)
 
 ### ✅ Completado
 - [x] Análisis de requerimientos empresariales
 - [x] Diseño de arquitectura inicial
 - [x] Configuración del entorno de desarrollo
-
-### 🔄 En Desarrollo
-- [ ] Desarrollo de API REST con FastAPI
+- [x] Desarrollo de API REST con FastAPI
 - [x] Diseño de base de datos
 - [x] Implementación de autenticación
-- [ ] Desarrollo de interfaz móvil
+- [x] Desarrollo de interfaz móvil
+- [x] Módulo de firmas digitales
+- [x] Sistema de reportes automáticos
+- [x] Panel administrativo
+
+### 🔄 En Desarrollo
+- [ ] Sistema de notificacion por correo
 
 ### 📋 Próximas Fases
-- [ ] Módulo de firmas digitales
-- [ ] Sistema de reportes automáticos
-- [ ] Panel administrativo
-- [ ] Pruebas piloto con empresas
-
+- [ ] Realizar pruebas en un entorno laboral
 ---
 
 ## 🔮 Roadmap Futuro
@@ -169,7 +169,7 @@ graph TD
 
 ## 📞 Información del Proyecto
 
-**Estado:** 🔬 Prototipo en Desarrollo Inicial  
+**Estado:** 🔬 MVP completado
 **Licencia:** En Definición  
 **Fecha de Inicio:** 2025  
 
