@@ -143,6 +143,8 @@ graph TD
 
 ### 🔄 En Desarrollo
 - [ ] Sistema de notificacion por correo
+- [ ] Graficas de KPIs
+- [ ] Modelo de ML para predecir frecuencia de revision
 
 ### 📋 Próximas Fases
 - [ ] Realizar pruebas en un entorno laboral
@@ -183,4 +185,4 @@ graph TD
 
 ⚠️ **Nota:** Este es un proyecto en fase de prototipo. La información y características están sujetas a cambios durante el desarrollo.
 
-🔄 **Última Actualización:** Mayo 2025
+🔄 **Última Actualización:** Junio 2025
