@@ -126,9 +126,7 @@
 
                 // Recolectar datos
                 const email = loginForm.email.value;
-                const password = loginForm.password.value;
-
-                try {
+                const password = loginForm.password.value;                try {
                     const response = await fetch('/login', {
                         method: 'POST',
                         headers: {
@@ -139,25 +137,36 @@
                     });
 
                     if (response.ok) {
-                            messageArea.innerHTML = `
-                                <div class="text-green-600 font-medium">
-                                    ¡Inicio de sesión exitoso! Redirigiendo...
-                                </div>
-                            `;
+                        const data = await response.json();
+                        
+                        messageArea.innerHTML = `
+                            <div class="text-green-600 font-medium">
+                                ¡Inicio de sesión exitoso! Redirigiendo...
+                            </div>
+                        `;
+                        
+                        loginButton.textContent = '¡Bienvenido!';
+                        
+                        // Redirección basada en rol
+                        setTimeout(() => {
+                            const userRole = data.user.role;
                             
-                            loginButton.textContent = '¡Bienvenido!';
-                            
-                            setTimeout(() => {
+                            // Verificar si es administrador (tanto "Administrador" como "admin")
+                            if (userRole === 'Administrador' || userRole === 'admin') {
+                                window.location.href = '/admin';
+                            } else {
                                 window.location.href = '/dashboard';
-                            }, 1500);
-                        } else {
-                            throw new Error("Token no recibido del servidor.");
-                        }
+                            }
+                        }, 1500);
+                    } else {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || "Credenciales inválidas");
+                    }
                 } catch (error) {
                     console.error('Error en la petición de login:', error);
                     messageArea.innerHTML = `
                         <div class="text-red-600 font-medium">
-                            Error de conexión. Intente nuevamente.
+                            ${error.message || 'Error de conexión. Intente nuevamente.'}
                         </div>
                     `;
                 } finally {

@@ -23,13 +23,13 @@ async def login(response: Response, db: session ,data: User_login):
     # Creamos el token
     token_data = {"sub":user.nombre, "id": user.id ,"role": user.cargo}
     token = create_token(token_data)
-    
     # Preparamos un json para devolver datos relevantes
     response = JSONResponse(content={
         "message": "Inicio de sesion exitoso",
         "user": {
             "id": user.id,
             "nombre": user.nombre,
+            "role": user.cargo
         }
     })
     
