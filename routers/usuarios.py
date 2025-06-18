@@ -3,6 +3,7 @@ from utils.credential import *
 from utils.manage_users import *
 from db.db_config import session 
 from models.usuarios_model import *
+from utils.emails import enviar_correo
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import APIRouter, Response , Form, UploadFile,File
@@ -62,6 +63,16 @@ async def singnup(db: session,
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+    
+    # Enviamos el correo de verificacion al nuevo usuario
+    data_user = {
+        "username":name,
+        "email": email,
+        "password":password
+    }
+    
+    # Enviamos mensaje al nuevo usuario
+    await enviar_correo(data_user,data_user["email"])
     
     return JSONResponse(content={
         "message": "Nuevo usuario creado con exito",
