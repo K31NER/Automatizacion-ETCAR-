@@ -136,37 +136,72 @@
                         body: JSON.stringify({ email, password })
                     });
 
+                    // Verificar si la respuesta es JSON válido
+                    const contentType = response.headers.get('content-type');
+                    
                     if (response.ok) {
-                        const data = await response.json();
-                        
-                        messageArea.innerHTML = `
-                            <div class="text-green-600 font-medium">
-                                ¡Inicio de sesión exitoso! Redirigiendo...
-                            </div>
-                        `;
-                        
-                        loginButton.textContent = '¡Bienvenido!';
-                        
-                        // Redirección basada en rol
-                        setTimeout(() => {
-                            const userRole = data.user.role;
+                        if (contentType && contentType.includes('application/json')) {
+                            const data = await response.json();
                             
-                            // Verificar si es administrador (tanto "Administrador" como "admin")
-                            if (userRole === 'Administrador' || userRole === 'admin') {
-                                window.location.href = '/admin';
-                            } else {
-                                window.location.href = '/dashboard';
-                            }
-                        }, 1500);
+                            messageArea.innerHTML = `
+                                <div class="text-green-600 font-medium">
+                                    ¡Inicio de sesión exitoso! Redirigiendo...
+                                </div>
+                            `;
+                            
+                            loginButton.textContent = '¡Bienvenido!';
+                            
+                            // Redirección basada en rol
+                            setTimeout(() => {
+                                const userRole = data.user.role;
+                                
+                                // Verificar si es administrador (tanto "Administrador" como "admin")
+                                if (userRole === 'Administrador' || userRole === 'admin') {
+                                    window.location.href = '/admin';
+                                } else {
+                                    window.location.href = '/dashboard';
+                                }
+                            }, 1500);
+                        } else {
+                            throw new Error("Respuesta del servidor no válida");
+                        }
                     } else {
-                        const errorData = await response.json();
-                        throw new Error(errorData.detail || "Credenciales inválidas");
+                        // Manejar errores del servidor
+                        let errorMessage = "Error en el servidor";
+                        
+                        if (contentType && contentType.includes('application/json')) {
+                            try {
+                                const errorData = await response.json();
+                                errorMessage = errorData.detail || errorData.message || "Credenciales inválidas";
+                            } catch (e) {
+                                errorMessage = "Error al procesar la respuesta del servidor";
+                            }
+                        } else {
+                            // Si no es JSON, probablemente es HTML de error
+                            if (response.status === 404) {
+                                errorMessage = "Servicio no disponible. Verifique que el servidor esté funcionando.";
+                            } else if (response.status === 500) {
+                                errorMessage = "Error interno del servidor.";
+                            } else {
+                                errorMessage = `Error del servidor (${response.status})`;
+                            }
+                        }
+                        
+                        throw new Error(errorMessage);
                     }
                 } catch (error) {
                     console.error('Error en la petición de login:', error);
+                    
+                    let displayMessage = error.message;
+                    
+                    // Manejar errores de red
+                    if (error.name === 'TypeError' || error.message.includes('fetch')) {
+                        displayMessage = 'Error de conexión. Verifique su conexión a internet y que el servidor esté funcionando.';
+                    }
+                    
                     messageArea.innerHTML = `
                         <div class="text-red-600 font-medium">
-                            ${error.message || 'Error de conexión. Intente nuevamente.'}
+                            ${displayMessage}
                         </div>
                     `;
                 } finally {
