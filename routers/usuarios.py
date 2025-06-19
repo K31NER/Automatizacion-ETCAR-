@@ -82,3 +82,50 @@ async def singnup(db: session,
             "rol": new_user.cargo
         }
     },status_code=201)
+
+@router.patch("/update_profile")
+async def update_profile(db: session,
+                user_id: int,
+                name: Optional[str] = Form(None),
+                email: Optional[str] = Form(None),
+                password: Optional[str] = Form(None), 
+                firma: Optional[UploadFile] = File(None)):
+    """ Actualiza la informacion de los usuarios"""
+    
+    # Obtenemos el usuario
+    user = db.get(User,user_id)
+    
+    # Validamos el usuario
+    if not user or user is None :
+        raise HTTPException(status_code=404,detail="Usuario no encontrado")
+    
+    try: 
+        # Solo actualiza lo que realmente cambió
+        if name is not None:
+            user.nombre = name
+
+        if email is not None:
+            user.correo = email
+
+        if password is not None:
+            user.contraseña = hased_password(password) 
+            
+        if firma is not None:
+            firma_content = await validar_tipo_archivo(firma)
+            user.firma = firma_content
+        
+        # Guardamos los cambios en la base de datos
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        
+        return {
+        "message": "Perfil actualizado exitosamente",
+        "user": {
+            "id": user.id,
+            "nombre": user.nombre,
+            "correo": user.correo
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500,detail=f"Error al actualizar datos: {e}")

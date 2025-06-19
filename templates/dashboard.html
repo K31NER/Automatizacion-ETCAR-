@@ -194,10 +194,52 @@
         .empty-state-icon {
             animation: float 3s ease-in-out infinite;
         }
-        
-        @keyframes float {
+          @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
+        }
+        
+        /* Estilos para avatares con iniciales */
+        .user-avatar {
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+        }
+        
+        .user-avatar.desktop {
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1rem;
+        }
+        
+        .user-avatar.mobile {
+            width: 1.75rem;
+            height: 1.75rem;
+            font-size: 0.75rem;
+        }
+        
+        .user-avatar.sidebar {
+            width: 3rem;
+            height: 3rem;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
         }
         
         .empty-state-container {
@@ -208,7 +250,7 @@
             transform: scale(1.05);
         }
 
-        #editModal button#closeEditModal, #deleteModal button#closeDeleteModal {
+        #editModal button#closeEditModal, #deleteModal button#closeDeleteModal, #profileModal button#closeProfileModal {
             top: 1rem;
             right: 1rem;
             font-size: 2rem;
@@ -225,16 +267,14 @@
             z-index: 10;
             transition: background 0.2s, color 0.2s;
         }
-        #editModal button#closeEditModal:hover, #deleteModal button#closeDeleteModal:hover {
+        #editModal button#closeEditModal:hover, #deleteModal button#closeDeleteModal:hover, #profileModal button#closeProfileModal:hover {
             background: #ef4444;
             color: #fff;
-        }
-
-        /* 3. Permitir cerrar modal haciendo click fuera del modal */
-        #editModal, #deleteModal {
+        }        /* 3. Permitir cerrar modal haciendo click fuera del modal */
+        #editModal, #deleteModal, #profileModal {
             cursor: pointer;
         }
-        #editModal > div, #deleteModal > div {
+        #editModal > div, #deleteModal > div, #profileModal > div {
             cursor: auto;
         }
 
@@ -334,12 +374,21 @@
 <body class="bg-gray-50 min-h-screen">
     <!-- Contenedor Principal -->
     <div class="dashboard-grid grid min-h-screen">
-        <!-- Sidebar solo visible en escritorio -->
-        <aside id="sidebar" class="bg-green-900 p-4 text-white shadow-lg hidden lg:block">
+        <!-- Sidebar solo visible en escritorio -->        <aside id="sidebar" class="bg-green-900 p-4 text-white shadow-lg hidden lg:block">
             <div class="mb-8 flex items-center space-x-2">
                 <img src="/static/img/logo.png" alt="ETCAR Logo" class="sidebar-logo w-12 h-12">
                 <h2 class="text-xl font-bold">ETCAR</h2>
             </div>
+            
+            <!-- Avatar del usuario en sidebar -->
+            <div class="mb-6 flex flex-col items-center">
+                <div class="user-avatar sidebar" id="sidebarUserAvatar" title="Haz clic para editar perfil">K</div>
+                <div class="text-center">
+                    <span class="text-sm text-gray-300" id="sidebarGreeting">Buenos días</span>
+                    <span class="block text-sm font-medium cursor-pointer hover:text-green-300 transition-colors" id="sidebarUserName" title="Haz clic para editar perfil">Keiner</span>
+                </div>
+            </div>
+            
             <nav class="space-y-1">
                 <a href="#" data-section="dashboard" class="nav-link active flex items-center space-x-2 p-3 rounded-lg hover:bg-green-800 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -368,13 +417,12 @@
             <!-- Header para móviles y tablets -->
             <div class="lg:hidden mb-6">
                 <!-- Fila 1: Usuario (izq), Título (centro), Logout (der) -->
-                <div class="grid grid-cols-3 items-center mb-4 gap-2">
-                    <!-- Usuario a la izquierda -->
+                <div class="grid grid-cols-3 items-center mb-4 gap-2">                    <!-- Usuario a la izquierda -->
                     <div class="flex items-center space-x-2 justify-self-start">
-                        <img src="/static/img/logo.png" alt="ETCAR" class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg shadow-sm">
+                        <div class="user-avatar mobile" id="mobileUserAvatar" title="Haz clic para editar perfil">J</div>
                         <div class="hidden xs:flex flex-col">
                             <span class="text-xs text-gray-500" id="mobileGreeting">Buenos días</span>
-                            <span class="text-xs sm:text-sm font-medium text-green-700" id="mobileUserName">Jhony</span>
+                            <span class="text-xs sm:text-sm font-medium text-green-700 cursor-pointer hover:text-green-800 transition-colors" id="mobileUserName" title="Haz clic para editar perfil">Jhony</span>
                         </div>
                     </div>
                     
@@ -394,12 +442,12 @@
                         </button>
                     </div>
                 </div>
-                
-                <!-- Fila 2: Usuario móvil (solo en pantallas muy pequeñas) -->
+                  <!-- Fila 2: Usuario móvil (solo en pantallas muy pequeñas) -->
                 <div class="flex xs:hidden items-center justify-center mb-3">
                     <div class="flex items-center space-x-2">
+                        <div class="user-avatar mobile" id="mobileUserAvatar2" title="Haz clic para editar perfil">J</div>
                         <span class="text-xs text-gray-500" id="mobileGreeting2">Buenos días</span>
-                        <span class="text-sm font-medium text-green-700" id="mobileUserName2">Jhony</span>
+                        <span class="text-sm font-medium text-green-700 cursor-pointer hover:text-green-800 transition-colors" id="mobileUserName2" title="Haz clic para editar perfil">Jhony</span>
                     </div>
                 </div>
                 
@@ -415,11 +463,13 @@
             <!-- Header para desktop/portátiles -->
             <div class="hidden lg:block mb-6">
                 <!-- Fila 1: Usuario (izq), Búsqueda (centro), Título (der) -->
-                <div class="grid grid-cols-3 items-center mb-4">
-                    <!-- Usuario a la izquierda (sin logo) -->
-                    <div class="flex flex-col justify-self-start">
-                        <span class="text-sm text-gray-500" id="desktopGreeting">Buenos días</span>
-                        <span class="text-lg font-medium text-green-700" id="desktopUserName">Jhony</span>
+                <div class="grid grid-cols-3 items-center mb-4">                    <!-- Usuario a la izquierda (sin logo) -->
+                    <div class="flex items-center space-x-3 justify-self-start">
+                        <div class="user-avatar desktop" id="desktopUserAvatar" title="Haz clic para editar perfil">J</div>
+                        <div class="flex flex-col">
+                            <span class="text-sm text-gray-500" id="desktopGreeting">Buenos días</span>
+                            <span class="text-lg font-medium text-green-700 cursor-pointer hover:text-green-800 transition-colors" id="desktopUserName" title="Haz clic para editar perfil">Jhony</span>
+                        </div>
                     </div>
                     
                     <!-- Búsqueda centrada -->
@@ -545,11 +595,48 @@
                 <button id="cancelDeleteBtn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">Cancelar</button>
                 <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Eliminar</button>
             </div>
+        </div>    </div>
+    
+    <!-- Modal para actualizar perfil -->
+    <div id="profileModal" class="modal-overlay hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+            <button id="closeProfileModal" class="modal-close-btn absolute">&times;</button>
+            <h3 class="text-lg font-semibold mb-4 text-green-800">Actualizar Perfil</h3>
+            <form id="profileForm" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                    <input id="profileName" name="name" type="text" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"/>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Correo</label>
+                    <input id="profileEmail" name="email" type="email" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"/>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nueva Contraseña (opcional)</label>
+                    <input id="profilePassword" name="password" type="password" placeholder="Dejar vacío para no cambiar" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"/>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nueva Firma (opcional)</label>
+                    <input id="profileSignature" name="firma" type="file" accept="image/*" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"/>
+                    <p class="text-xs text-gray-500 mt-1">Dejar vacío para no cambiar la firma actual</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelProfileBtn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">Cancelar</button>
+                    <button type="submit" id="saveProfileBtn" class="btn-primary px-4 py-2 rounded-lg text-white bg-green-600 hover:bg-green-700">Actualizar Perfil</button>
+                </div>
+            </form>
         </div>
     </div>
-    <script>
-        function getUserName() {
+    
+    <script>        function getUserName() {
             return '{{ username | safe }}';
+        }
+          function getUserId() {
+            return parseInt('{{ id }}');
+        }
+        
+        function getUserInitial(name) {
+            return name ? name.charAt(0).toUpperCase() : 'U';
         }
         
         function showToast(message, type = 'info') {
@@ -698,30 +785,69 @@
                     </div>
                 </td></tr>`;
             }
-        }
-
-        function initializeUser() {
+        }        function initializeUser() {
             const hour = new Date().getHours();
             const greeting = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches';
             const userName = getUserName();
+            const userInitial = getUserInitial(userName);
+            
+            // Avatares
+            const mobileUserAvatar = document.getElementById('mobileUserAvatar');
+            const mobileUserAvatar2 = document.getElementById('mobileUserAvatar2');
+            const desktopUserAvatar = document.getElementById('desktopUserAvatar');
+            const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+            
+            if (mobileUserAvatar) {
+                mobileUserAvatar.textContent = userInitial;
+                mobileUserAvatar.addEventListener('click', openProfileModal);
+            }
+            if (mobileUserAvatar2) {
+                mobileUserAvatar2.textContent = userInitial;
+                mobileUserAvatar2.addEventListener('click', openProfileModal);
+            }
+            if (desktopUserAvatar) {
+                desktopUserAvatar.textContent = userInitial;
+                desktopUserAvatar.addEventListener('click', openProfileModal);
+            }
+            if (sidebarUserAvatar) {
+                sidebarUserAvatar.textContent = userInitial;
+                sidebarUserAvatar.addEventListener('click', openProfileModal);
+            }
             
             // Móviles
             const mobileGreeting = document.getElementById('mobileGreeting');
             const mobileUserName = document.getElementById('mobileUserName');
             const mobileGreeting2 = document.getElementById('mobileGreeting2');
             const mobileUserName2 = document.getElementById('mobileUserName2');
-            
-            if (mobileGreeting) mobileGreeting.textContent = greeting;
-            if (mobileUserName) mobileUserName.textContent = userName;
+              if (mobileGreeting) mobileGreeting.textContent = greeting;
+            if (mobileUserName) {
+                mobileUserName.textContent = userName;
+                mobileUserName.addEventListener('click', openProfileModal);
+            }
             if (mobileGreeting2) mobileGreeting2.textContent = greeting;
-            if (mobileUserName2) mobileUserName2.textContent = userName;
-            
-            // Desktop
+            if (mobileUserName2) {
+                mobileUserName2.textContent = userName;
+                mobileUserName2.addEventListener('click', openProfileModal);
+            }
+              // Desktop
             const desktopGreeting = document.getElementById('desktopGreeting');
             const desktopUserName = document.getElementById('desktopUserName');
             
+            // Sidebar
+            const sidebarGreeting = document.getElementById('sidebarGreeting');
+            const sidebarUserName = document.getElementById('sidebarUserName');
+            
             if (desktopGreeting) desktopGreeting.textContent = greeting;
-            if (desktopUserName) desktopUserName.textContent = userName;
+            if (desktopUserName) {
+                desktopUserName.textContent = userName;
+                desktopUserName.addEventListener('click', openProfileModal);
+            }
+            
+            if (sidebarGreeting) sidebarGreeting.textContent = greeting;
+            if (sidebarUserName) {
+                sidebarUserName.textContent = userName;
+                sidebarUserName.addEventListener('click', openProfileModal);
+            }
             
             if (!sessionStorage.getItem('welcomeShown')) {
                 setTimeout(() => {
@@ -947,13 +1073,166 @@
             modal.classList.remove('hidden');
             modal.dataset.type = type;
             modal.dataset.id = data.id;
-        }
-        function closeDeleteModal() {
+        }        function closeDeleteModal() {
             document.getElementById('deleteModal').classList.add('hidden');
         }
-        document.getElementById('closeEditModal').onclick = closeEditModal;
+        
+        // Funciones del modal de perfil
+        async function openProfileModal() {
+            const userId = getUserId();
+            if (!userId) {
+                showToast('Error: No se pudo obtener el ID del usuario', 'error');
+                return;
+            }
+            
+            try {
+                // Obtener datos actuales del usuario
+                const response = await fetch(`/user_personal_data?id=${userId}`);
+                if (response.ok) {
+                    const userData = await response.json();
+                    
+                    // Llenar el formulario con los datos actuales
+                    document.getElementById('profileName').value = userData.nombre || '';
+                    document.getElementById('profileEmail').value = userData.correo || '';
+                    document.getElementById('profilePassword').value = '';
+                    document.getElementById('profileSignature').value = '';
+                    
+                    // Mostrar el modal
+                    document.getElementById('profileModal').classList.remove('hidden');
+                } else {
+                    showToast('Error al cargar los datos del usuario', 'error');
+                }
+            } catch (error) {
+                showToast('Error de conexión al cargar datos', 'error');
+            }
+        }
+          function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');            // Limpiar el formulario
+            document.getElementById('profileForm').reset();
+        }
+          // Función mejorada para abrir el modal del perfil
+        async function openProfileModal() {
+            try {
+                // Obtener el ID del usuario actual
+                const userId = getUserId();
+                console.log('User ID obtenido:', userId);
+                
+                if (!userId) {
+                    showToast('Error: No se pudo obtener el ID del usuario', 'error');
+                    return;
+                }
+                
+                // Obtener datos actuales del usuario
+                console.log('Haciendo fetch a:', `/user_personal_data?id=${userId}`);
+                const response = await fetch(`/user_personal_data?id=${userId}`);
+                console.log('Response status:', response.status);
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    console.log('Datos del usuario recibidos:', userData);
+                    
+                    // Llenar el formulario con los datos actuales
+                    document.getElementById('profileName').value = userData.nombre || '';
+                    document.getElementById('profileEmail').value = userData.correo || '';
+                    document.getElementById('profilePassword').value = '';
+                    document.getElementById('profileSignature').value = '';
+                    
+                    // Guardar el ID en el modal para usarlo después
+                    document.getElementById('profileModal').dataset.userId = userId;
+                    
+                    // Mostrar el modal
+                    document.getElementById('profileModal').classList.remove('hidden');                } else {
+                    const errorData = await response.json();
+                    console.log('Error en response:', errorData);
+                    showToast(errorData.detail || 'Error al cargar los datos del usuario', 'error');
+                }
+            } catch (error) {
+                console.error('Error en openProfileModal:', error);
+                showToast('Error de conexión al cargar datos', 'error');
+            }
+        }
+          document.getElementById('closeEditModal').onclick = closeEditModal;
         document.getElementById('closeDeleteModal').onclick = closeDeleteModal;
         document.getElementById('cancelDeleteBtn').onclick = closeDeleteModal;
+        
+        // Event listeners para el modal de perfil
+        document.getElementById('closeProfileModal').onclick = closeProfileModal;
+        document.getElementById('cancelProfileBtn').onclick = closeProfileModal;
+        
+        // Manejar el envío del formulario de perfil
+        document.getElementById('profileForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const userId = document.getElementById('profileModal').dataset.userId;            if (!userId) {
+                showToast('Error: No se pudo obtener el ID del usuario', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            
+            // Solo agregar campos que tienen valor
+            const name = document.getElementById('profileName').value.trim();
+            const email = document.getElementById('profileEmail').value.trim();
+            const password = document.getElementById('profilePassword').value.trim();
+            const signature = document.getElementById('profileSignature').files[0];
+            
+            // Validar que al menos un campo tenga datos
+            if (!name && !email && !password && !signature) {
+                showToast('Debe modificar al menos un campo para actualizar', 'error');
+                return;
+            }
+            
+            // No agregamos user_id al FormData, se pasa como parámetro en la URL
+            if (name) formData.append('name', name);
+            if (email) formData.append('email', email);
+            if (password) formData.append('password', password);
+            if (signature) formData.append('firma', signature);
+              try {
+                // Deshabilitar el botón mientras se envía
+                const saveBtn = document.getElementById('saveProfileBtn');
+                const originalText = saveBtn.textContent;
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Actualizando...';
+                
+                const response = await fetch(`/update_profile?user_id=${userId}`, {
+                    method: 'PATCH',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showToast('Perfil actualizado correctamente', 'success');
+                    closeProfileModal();
+                      // Actualizar el nombre en la interfaz si se cambió
+                    if (name) {
+                        const newInitial = getUserInitial(name);
+                        
+                        // Actualizar nombres
+                        document.getElementById('mobileUserName').textContent = name;
+                        document.getElementById('mobileUserName2').textContent = name;
+                        document.getElementById('desktopUserName').textContent = name;
+                        document.getElementById('sidebarUserName').textContent = name;
+                        
+                        // Actualizar avatares
+                        document.getElementById('mobileUserAvatar').textContent = newInitial;
+                        document.getElementById('mobileUserAvatar2').textContent = newInitial;
+                        document.getElementById('desktopUserAvatar').textContent = newInitial;
+                        document.getElementById('sidebarUserAvatar').textContent = newInitial;
+                    }
+                } else {
+                    const error = await response.json();
+                    showToast(error.detail || 'Error al actualizar el perfil', 'error');
+                }
+                  // Rehabilitar el botón
+                saveBtn.disabled = false;
+                saveBtn.textContent = originalText;
+            } catch (error) {
+                showToast('Error de conexión', 'error');
+                // Rehabilitar el botón en caso de error
+                const saveBtn = document.getElementById('saveProfileBtn');
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Actualizar Perfil';
+            }
+        };
 
         // --- CRUD logic for Edit/Delete ---
         document.getElementById('saveEditBtn').onclick = async function() {
@@ -1037,10 +1316,8 @@
         
         if (desktopLogoutBtn) desktopLogoutBtn.addEventListener('click', handleLogout);
         if (desktopLogoutBtnNew) desktopLogoutBtnNew.addEventListener('click', handleLogout);
-        if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
-
-        // Cerrar modal al hacer clic fuera del contenido
-        ['editModal','deleteModal'].forEach(id => {
+        if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);        // Cerrar modal al hacer clic fuera del contenido
+        ['editModal','deleteModal','profileModal'].forEach(id => {
             const modal = document.getElementById(id);
             modal.addEventListener('mousedown', function(e) {
                 if (e.target === modal) {
