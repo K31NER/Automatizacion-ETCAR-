@@ -3,8 +3,9 @@ from utils.clean_data import *
 from utils.credential import *
 from utils.manage_users import *
 from models.reportes_model import *
+from schemas.user import PersonalData
 from fastapi.responses import JSONResponse
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response,HTTPException
 
 router = APIRouter(tags=["Funciones extras"])
 
@@ -129,3 +130,18 @@ async def logout(response: Response):
     },status_code=200)
     response.delete_cookie("access_token", path="/")
     return response
+
+@router.get("/user_personal_data",response_model=PersonalData)
+async def personal_data(db:session,id:int):
+    """ Devuelve la informacion basica del usuario """
+    # Definimos lo que queremos obtener del usuario
+    query = select(User.nombre,User.correo).where(User.id == id)
+    # Obtenemos el usuario
+    user = db.exec(query).first()
+    
+    # Validamos que exista
+    if user is None:
+        raise HTTPException(status_code=404, detail="No se encontro el usuario")
+    
+    # devolvemos el usuario
+    return user
