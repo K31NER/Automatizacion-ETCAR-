@@ -40,7 +40,7 @@ async def list_reports_user(db: session, user_id: int):
     
     # Validamos si existen los datos
     if not result:
-        raise HTTPException(status_code=404,detail=f"No se encontraron reporte para este usuario")
+        return JSONResponse(status_code=404, content={"detail": f"No se encontraron reportes para el usuario con id: {user_id}"})
     
     # Limpiamos los datos
     clean_data = await clean_orm_data(result)
@@ -64,7 +64,7 @@ async def list_reports_user(db: session, user_id: int):
     
     # Validamos
     if not result:
-        raise HTTPException(status_code=404,detail=f"No se encontraron cronogramas para este usuario")
+        return JSONResponse(status_code=404, content={"detail": f"No se encontraron cronogramas para el usuario con id: {user_id}"})
     
     # Limpamos los datos
     clean_data = await clean_orm_data(result)
@@ -141,7 +141,7 @@ async def personal_data(db:session,id:int):
     
     # Validamos que exista
     if user is None:
-        raise HTTPException(status_code=404, detail="No se encontro el usuario")
+        return JSONResponse(status_code=404, content={"detail": f"No se encontró el usuario con id: {id}"})
     
     # devolvemos el usuario
     return user

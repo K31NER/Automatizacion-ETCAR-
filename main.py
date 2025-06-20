@@ -2,8 +2,8 @@ from fastapi.responses import HTMLResponse
 from db.db_config import create_tables
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from routers import render,reportes,usuarios,functions
 from fastapi import FastAPI,HTTPException,Request, status
+from routers import render,reportes,usuarios,functions,cronogramas
 
 app = FastAPI(title="MVP - Automatizacion reportes de excel", 
             description="Proyecto de automatizacion de reportes de maquinaria",
@@ -16,10 +16,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Incluimos los routers
 app.include_router(render.router)
-app.include_router(reportes.router)
 app.include_router(usuarios.router)
+app.include_router(reportes.router)
+app.include_router(cronogramas.router)
 app.include_router(functions.router)
-
 
 # Manjeamos lso errores por credenciales invalidas
 @app.exception_handler(HTTPException)

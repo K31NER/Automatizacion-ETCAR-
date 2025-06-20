@@ -97,8 +97,7 @@ async def update_profile(db: session,
     
     # Validamos el usuario
     if not user or user is None :
-        raise HTTPException(status_code=404,detail="Usuario no encontrado")
-    
+        return JSONResponse(status_code=404, content={"detail": f"No se encontró el usuario con id: {user_id}"})
     try: 
         # Solo actualiza lo que realmente cambió
         if name is not None:
