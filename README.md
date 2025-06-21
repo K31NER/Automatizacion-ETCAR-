@@ -64,13 +64,18 @@ Sistema de automatización de formularios empresariales que transforma procesos 
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
 
 ### Base de Datos
-![Database](https://img.shields.io/badge/Base_de_Datos-En_Definición-lightgrey?style=flat-square)
+![Database](https://img.shields.io/badge/Base_de_Datos-PostgreSQL-blue?style=flat-square&logo=postgresql&logoColor=white)
 
-### Frontend
-![Frontend](https://img.shields.io/badge/Frontend-En_Desarrollo-blue?style=flat-square)
+### Frontend  
+![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+
 
 ### Autenticación & Seguridad
-![Security](https://img.shields.io/badge/Seguridad-En_Diseño-green?style=flat-square)
+![Security](https://img.shields.io/badge/Seguridad-JWT-green?style=flat-square&logo=jsonwebtokens&logoColor=white)
+![RBAC](https://img.shields.io/badge/Control_de_Acceso-Validación_por_Roles-orange?style=flat-square&logo=trustpilot&logoColor=white)
 
 ---
 
@@ -140,11 +145,10 @@ graph TD
 - [x] Módulo de firmas digitales
 - [x] Sistema de reportes automáticos
 - [x] Panel administrativo
+- [x] Sistema de notificacion por correo
 
 ### 🔄 En Desarrollo
-- [ ] Sistema de notificacion por correo
 - [ ] Graficas de KPIs
-- [ ] Modelo de ML para predecir frecuencia de revision
 
 ### 📋 Próximas Fases
 - [ ] Realizar pruebas en un entorno laboral
