@@ -1410,12 +1410,10 @@
                     method: 'POST',
                     body: mappedFormData
                 });
-                const data = await res.json();
-                if (res.ok) {
+                const data = await res.json();                if (res.ok) {
                     showToast('Usuario registrado exitosamente.', 'success');
                     registerUserForm.reset();
                     switchSection('viewUsers'); // Volver a la lista
-                    renderUsersTable(); // Refrescar tabla
                 } else {
                     showToast(data.message || 'Error al registrar usuario', 'error');
                 }
