@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Optional
-from datetime import datetime
+from pydantic import EmailStr
+from datetime import datetime,timezone
 from models.usuarios_model import User
 from sqlmodel import SQLModel, Field, Relationship
 
@@ -51,3 +52,11 @@ class Cronograma(Maquina,table=True):
     
     class Config:
         from_attributes = True
+        
+class Registro(SQLModel,table=True):
+    id: Optional[int] = Field(primary_key=True)
+    nombre: str 
+    correo: EmailStr = Field(unique=True,index=True)
+    registro: Optional[bytes] = Field(default=None)
+    fecha_registro: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    origen: Optional[str] = Field(default="eliminación_usuario")
