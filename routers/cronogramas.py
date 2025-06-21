@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse,StreamingResponse
 
 router = APIRouter(tags=["Cronogramas"])
 
-@router.post("/new_cronograma")
+@router.post("/new_cronograma",summary="Crear nuevos cronogramas")
 async def save_cronograma(db:session,data: Create_cronograma):
     """ Crea nuevos reportes de mantenimiento """
     # Validamos la entrada de tipo fecha
@@ -41,7 +41,7 @@ async def save_cronograma(db:session,data: Create_cronograma):
         "message": f"Cronograma del trabajador con id:{data.id} creado con exito"
     }, status_code=201)
     
-@router.get("/download_cronograma")
+@router.get("/download_cronograma",summary="Descargar cronogramas en formato excel")
 async def download_cronograma(db:session,user_id:int):
     """ Descarga el cronograma del usuario con el id indicado """
     
@@ -75,7 +75,7 @@ async def download_cronograma(db:session,user_id:int):
         }
     )
 
-@router.get("/download_cronograma_pdf")
+@router.get("/download_cronograma_pdf",summary="Descargar cronograma en formato pdf con las firmas")
 async def download_pdf_cronograma(db:session,user_id:int,admin_id:int):
     """ Crea el pdf en base a los cronogramas del usuario y pone las firmas"""
     # Obtenemos las firmas
@@ -128,7 +128,7 @@ async def download_pdf_cronograma(db:session,user_id:int,admin_id:int):
 
 
 # EDITAR CRONOGRAMA
-@router.put("/edit_cronograma/{id}")
+@router.put("/edit_cronograma/{id}",summary="Editar cronogramas")
 async def edit_cronograma(id: int, data: Create_cronograma, db: session):
     cronograma = db.get(Cronograma, id)
     if not cronograma:
@@ -150,7 +150,7 @@ async def edit_cronograma(id: int, data: Create_cronograma, db: session):
         raise HTTPException(status_code=400, detail=f"Error al actualizar: {str(e)}")
 
 # ELIMINAR CRONOGRAMA
-@router.delete("/delete_cronograma/{id}")
+@router.delete("/delete_cronograma/{id}",summary="Borrar cronogramas")
 async def delete_cronograma(id: int, db: session):
     cronograma = db.get(Cronograma, id)
     if not cronograma:

@@ -1,4 +1,6 @@
 import bcrypt
+import string
+import secrets
 from sqlmodel import select
 from db.db_config import session
 from models.usuarios_model import User
@@ -37,3 +39,8 @@ def validate_user(db:session,email:str,password:str) -> User:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Contraseña incorrecta")
     
     return result
+
+def random_password()-> str:
+    """ Genera una contraseña aleatoria para los nuevos usuarios """
+    
+    return  ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(8))

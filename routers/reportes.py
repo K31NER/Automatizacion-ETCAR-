@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse,StreamingResponse
 
 router = APIRouter(tags=["Reportes"])
 
-@router.post("/new_registration")
+@router.post("/new_registration",summary="Crear nuevos registros")
 async def save_registration(db:session,data: Create_report):
     """ Crea nuevos reportes de mantenimiento """
     # Validamos la entrada de tipo fecha
@@ -43,7 +43,7 @@ async def save_registration(db:session,data: Create_report):
     }, status_code=201)
     
     
-@router.get("/download_report")
+@router.get("/download_report",summary="Descargar en formato excel los registros del usuario")
 async def download_report(db:session,user_id:int):
     """ Descarga el excel con los reporte de el empleado con el id indicado """
     
@@ -79,7 +79,7 @@ async def download_report(db:session,user_id:int):
     )
     
     
-@router.get("/download_report_pdf")
+@router.get("/download_report_pdf",summary="Descargar un pdf de los reportes y agrega las firmas")
 async def download_pdf_report(db:session,user_id:int,admin_id:int):
     """ Crea el pdf en base a los reportes del usuario y pone las firmas"""
     
@@ -142,7 +142,7 @@ async def download_pdf_report(db:session,user_id:int,admin_id:int):
 
 
 # EDITAR REPORTE
-@router.put("/edit_report/{id}")
+@router.put("/edit_report/{id}",summary="Editar los reportes")
 async def edit_report(id: int, data: Create_report, db: session):
     reporte = db.get(Reporte, id)
     if not reporte:
@@ -164,7 +164,7 @@ async def edit_report(id: int, data: Create_report, db: session):
         raise HTTPException(status_code=400, detail=f"Error al actualizar: {str(e)}")
 
 # ELIMINAR REPORTE
-@router.delete("/delete_report/{id}")
+@router.delete("/delete_report/{id}",summary="Borrar los reportes")
 async def delete_report(id: int, db: session):
     reporte = db.get(Reporte, id)
     if not reporte:

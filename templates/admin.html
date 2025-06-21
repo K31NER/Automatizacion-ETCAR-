@@ -746,13 +746,16 @@
                                         <svg class="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                                         Contraseña
                                     </span>
-                                </label>
-                                <div class="relative">
-                                    <input type="password" id="password" name="password" required class="form-input block w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500" placeholder="Mínimo 8 caracteres">
-                                    <button type="button" id="togglePasswordVisibility" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
-                                        <svg id="eyeIcon" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                        <svg id="eyeSlashIcon" class="h-5 w-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .925-2.945 3.542-5.33 6.574-6.111M15 12a3 3 0 11-6 0 3 3 0 016 0zm6.908 3.73A9.979 9.979 0 0121.542 12c-1.274-4.057-5.064-7-9.542-7a9.975 9.975 0 00-2.548.397m0 0A11.953 11.953 0 0012 5c4.478 0 8.268 2.943 9.542 7a11.953 11.953 0 01-2.048 3.85M2 2l20 20"></path></svg>
-                                    </button>
+                                </label>                                <div class="relative">
+                                    <input type="password" id="password" name="password" required class="form-input block w-full px-4 py-3 pr-24 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500" placeholder="Mínimo 8 caracteres">
+                                    <div class="absolute inset-y-0 right-0 flex items-center">                                        <button type="button" id="generatePasswordBtn" class="pr-2 flex items-center text-gray-400 hover:text-green-600 focus:outline-none transition-colors" title="Generar contraseña aleatoria">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                        </button>
+                                        <button type="button" id="togglePasswordVisibility" class="pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors" title="Mostrar/ocultar contraseña">
+                                            <svg id="eyeIcon" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                            <svg id="eyeSlashIcon" class="h-5 w-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .925-2.945 3.542-5.33 6.574-6.111M15 12a3 3 0 11-6 0 3 3 0 016 0zm6.908 3.73A9.979 9.979 0 0121.542 12c-1.274-4.057-5.064-7-9.542-7a9.975 9.975 0 00-2.548.397m0 0A11.953 11.953 0 0012 5c4.478 0 8.268 2.943 9.542 7a11.953 11.953 0 01-2.048 3.85M2 2l20 20"></path></svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -876,9 +879,7 @@
                 </div>
             </div>
         </main>
-    </div>
-
-    <!-- Modal Detalles de Usuario -->
+    </div>    <!-- Modal Detalles de Usuario -->
     <div id="userDetailsModal" class="modal">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6">
@@ -894,6 +895,37 @@
             </div>
             <div id="userDetailsContent" class="space-y-6">
                 <!-- Contenido dinámico se insertará aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmación Eliminar Usuario -->
+    <div id="deleteUserModal" class="modal">
+        <div class="modal-content max-w-md">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mr-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold text-gray-800">Confirmar Eliminación</h4>
+                    <p class="text-gray-600 text-sm">Esta acción no se puede deshacer</p>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-gray-700 mb-2">¿Está seguro de que desea eliminar al usuario:</p>
+                <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <p class="font-semibold text-red-800" id="deleteUserName">-</p>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button id="cancelDeleteUser" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg focus:outline-none transition-colors">
+                    Cancelar
+                </button>
+                <button id="confirmDeleteUser" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg focus:outline-none transition-colors">
+                    Eliminar Usuario
+                </button>
             </div>
         </div>
     </div>
@@ -1085,20 +1117,33 @@
                         <td class="px-6 py-4 text-sm font-medium text-gray-700">${user.id}</td>
                         <td class="px-6 py-4 text-sm font-semibold text-gray-900">${user.nombre}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">${user.correo || ''}</td>
-                        <td class="px-6 py-4 text-sm text-gray-600">${user.cargo}</td>
-                        <td class="px-6 py-4">
-                            <button data-userid="${user.id}" class="view-details-btn inline-flex items-center px-3 py-2 text-sm font-medium text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                Ver Detalles
-                            </button>
+                        <td class="px-6 py-4 text-sm text-gray-600">${user.cargo}</td>                        <td class="px-6 py-4">
+                            <div class="flex space-x-2">
+                                <button data-userid="${user.id}" class="view-details-btn inline-flex items-center px-3 py-2 text-sm font-medium text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                    Ver Detalles
+                                </button>
+                                ${user.cargo !== 'Administrador' ? `
+                                <button data-userid="${user.id}" data-username="${user.nombre}" class="delete-user-btn inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Eliminar
+                                </button>
+                                ` : ''}
+                            </div>
                         </td>
                     `;
                     usersTableBody.appendChild(row);
-                });
-                // Asignar evento a los botones de ver detalles
+                });                // Asignar evento a los botones de ver detalles
                 document.querySelectorAll('.view-details-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         openUserDetailsModal(parseInt(this.dataset.userid));
+                    });
+                });
+                
+                // Asignar evento a los botones de eliminar usuario
+                document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        openDeleteUserModal(parseInt(this.dataset.userid), this.dataset.username);
                     });
                 });
             } catch (e) {
@@ -1298,14 +1343,54 @@
                     mobileSearchResults.classList.add('hidden');
                 }
             });
-        }
-
-        if (togglePasswordVisibilityButton && passwordInput && eyeIcon && eyeSlashIcon) {
+        }        if (togglePasswordVisibilityButton && passwordInput && eyeIcon && eyeSlashIcon) {
             togglePasswordVisibilityButton.addEventListener('click', () => {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
                 eyeIcon.classList.toggle('hidden');
                 eyeSlashIcon.classList.toggle('hidden');
+            });
+        }
+
+        // Generar contraseña aleatoria
+        const generatePasswordBtn = document.getElementById('generatePasswordBtn');
+        if (generatePasswordBtn && passwordInput) {
+            generatePasswordBtn.addEventListener('click', async () => {
+                try {
+                    // Deshabilitar botón temporalmente
+                    generatePasswordBtn.disabled = true;
+                    generatePasswordBtn.classList.add('opacity-50');
+                    
+                    const response = await fetch('/gen_random_pass');
+                    if (response.ok) {
+                        const data = await response.json();
+                        passwordInput.value = data.password;
+                        
+                        // Mostrar la contraseña generada temporalmente
+                        const currentType = passwordInput.getAttribute('type');
+                        if (currentType === 'password') {
+                            passwordInput.setAttribute('type', 'text');
+                            eyeIcon.classList.add('hidden');
+                            eyeSlashIcon.classList.remove('hidden');
+                        }
+                        
+                        // Mostrar notificación de éxito
+                        showToast('Contraseña generada automáticamente', 'success');
+                        
+                        // Enfocar el campo para que el usuario vea la contraseña
+                        passwordInput.focus();
+                        passwordInput.select();
+                        
+                    } else {
+                        showToast('Error al generar contraseña', 'error');
+                    }
+                } catch (error) {
+                    showToast('Error de conexión al generar contraseña', 'error');
+                } finally {
+                    // Rehabilitar botón
+                    generatePasswordBtn.disabled = false;
+                    generatePasswordBtn.classList.remove('opacity-50');
+                }
             });
         }
 
@@ -1389,9 +1474,7 @@
             });
         }
         if(desktopLogoutBtn) desktopLogoutBtn.addEventListener('click', handleLogout);
-        if(mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
-
-        // --- Mostrar detalles de usuario con tablas de reportes y cronogramas ---
+        if(mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);        // --- Mostrar detalles de usuario con tablas de reportes y cronogramas ---
         async function openUserDetailsModal(userId) {
             userDetailsContent.innerHTML = '<div class="text-center text-gray-500 py-8">Cargando detalles...</div>';
             userDetailsModal.classList.add('active');
@@ -1489,6 +1572,70 @@
             } catch (err) {
                 userDetailsContent.innerHTML = '<div class="text-red-600">Error al cargar detalles del usuario.</div>';
             }
+        }
+
+        // --- Modal de confirmación para eliminar usuario ---
+        const deleteUserModal = document.getElementById('deleteUserModal');
+        const deleteUserName = document.getElementById('deleteUserName');
+        const cancelDeleteUser = document.getElementById('cancelDeleteUser');
+        const confirmDeleteUser = document.getElementById('confirmDeleteUser');
+        let userToDelete = null;
+
+        function openDeleteUserModal(userId, userName) {
+            userToDelete = { id: userId, name: userName };
+            deleteUserName.textContent = userName;
+            deleteUserModal.classList.add('active');
+        }
+
+        // Cerrar modal de eliminación
+        if (cancelDeleteUser) {
+            cancelDeleteUser.addEventListener('click', () => {
+                deleteUserModal.classList.remove('active');
+                userToDelete = null;
+            });
+        }
+
+        // Confirmar eliminación
+        if (confirmDeleteUser) {
+            confirmDeleteUser.addEventListener('click', async () => {
+                if (!userToDelete) return;
+
+                try {
+                    const response = await fetch(`/workers/${userToDelete.id}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Mostrar mensaje de éxito en una esquina
+                        showToast(data.message || 'Usuario eliminado correctamente', 'success');
+                        // Cerrar modal
+                        deleteUserModal.classList.remove('active');
+                        // Refrescar tabla y estadísticas
+                        renderUsersTable();
+                        fetchUserStats();
+                    } else {
+                        // Mostrar mensaje de error
+                        showToast(data.detail || 'Error al eliminar usuario', 'error');
+                    }
+                } catch (error) {
+                    showToast('Error de conexión al eliminar usuario', 'error');
+                }
+
+                userToDelete = null;
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera
+        if (deleteUserModal) {
+            deleteUserModal.addEventListener('mousedown', (e) => {
+                if (e.target === deleteUserModal) {
+                    deleteUserModal.classList.remove('active');
+                    userToDelete = null;
+                }
+            });
         }
 
         // --- Cierre del modal de detalles de usuario ---

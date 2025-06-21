@@ -1,9 +1,9 @@
 from schemas.user import * 
+from utils.emails import *
 from utils.credential import *
 from utils.manage_users import *
 from db.db_config import session 
 from models.usuarios_model import *
-from utils.emails import enviar_correo
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import APIRouter, Response , Form, UploadFile,File
@@ -13,8 +13,10 @@ router = APIRouter(tags=["Usuarios"])
 # Schema de autenticacion
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
-@router.post("/login")
+@router.post("/login",summary="Manejo del registro de usuarios")
 async def login(response: Response, db: session ,data: User_login):
+    """ Maneja el registro de usuarios y crea el jwt"""
+    
     email = data.email
     password = data.password
     user = validate_user(db,email,password)
@@ -39,8 +41,8 @@ async def login(response: Response, db: session ,data: User_login):
 
     return response
 
-@router.post("/signup")
-async def singnup(db: session, 
+@router.post("/signup",summary="Crear nuevos perfiles de usuarios")
+async def singnup(db: session,user:dict = Depends(required_admin), 
                 name: str = Form(...),
                 rol: str = Form(...),
                 email: str = Form(...),
@@ -72,7 +74,7 @@ async def singnup(db: session,
     }
     
     # Enviamos mensaje al nuevo usuario
-    await enviar_correo(data_user,data_user["email"])
+    await enviar_correo_creacion(data_user,data_user["email"])
     
     return JSONResponse(content={
         "message": "Nuevo usuario creado con exito",
@@ -83,7 +85,7 @@ async def singnup(db: session,
         }
     },status_code=201)
 
-@router.patch("/update_profile")
+@router.patch("/update_profile",summary="Actualizar los datos de los usuarios")
 async def update_profile(db: session,
                 user_id: int,
                 name: Optional[str] = Form(None),
@@ -128,3 +130,33 @@ async def update_profile(db: session,
         }
     except Exception as e:
         raise HTTPException(status_code=500,detail=f"Error al actualizar datos: {e}")
+
+@router.get("/gen_random_pass",summary="Generar contraseñas aletorias de 8 digitos")
+async def create_random_pass():
+    return JSONResponse(content={
+        "password": random_password()
+    }, status_code=201)
+    
+@router.delete("/workers/{worker_id}",summary="Borrar a los trabajadores por id")
+async def delete_user(db: session,worker_id: int,user:dict = Depends(required_admin)):
+    """ Borrar a los trabajadores en base a su id"""
+    
+    # Obtenemos el usuario en base a su id
+    worker = db.get(User,worker_id)
+    if not worker:
+        return JSONResponse(status_code=404, content={"detail": f"No se encontró el usuario con id: {worker_id}"})
+    
+    # Validamos su rol
+    if worker.cargo == "Administrador":
+        return JSONResponse(status_code=403, content={"detail": f"No se puede eliminar a un administrador"})
+    
+    # Borramos al trabajador
+    db.delete(worker)
+    db.commit()
+    
+    # Le notificamos por correo
+    await enviar_correo_eliminacion(username=worker.nombre,destinario=worker.correo)
+    
+    return JSONResponse(content={
+        "message" : f"El trabajador {worker.nombre} con id {worker.id} fue eliminado correctamente"
+    })
