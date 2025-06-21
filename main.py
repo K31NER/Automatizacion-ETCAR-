@@ -21,7 +21,7 @@ app.include_router(reportes.router)
 app.include_router(cronogramas.router)
 app.include_router(functions.router)
 
-# Manjeamos lso errores por credenciales invalidas
+# Manjamos los errores por credenciales invalidas
 @app.exception_handler(HTTPException)
 async def credenciales_invalidas(request:Request,exc:HTTPException):
     """ Renderiza html para informar sobre la falta de credenciales o permisos"""

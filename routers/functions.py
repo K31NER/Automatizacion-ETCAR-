@@ -9,7 +9,7 @@ from fastapi import APIRouter, Response,HTTPException
 
 router = APIRouter(tags=["Funciones extras"])
 
-@router.get("/listar_trabajadores")
+@router.get("/listar_trabajadores",summary="Listar todos los usuarios de rol trabajador")
 async def listar(db: session):
     """ Lista a todo los usuarios con rol de trabajador """
     users = db.exec(select(User.id, User.nombre, User.cargo, User.correo).where(User.cargo == "Trabajador")).all()
@@ -17,7 +17,7 @@ async def listar(db: session):
     users_list = [{"id": user[0],"nombre":user[1], "cargo": user[2], "correo": user[3]} for user in users]
     return users_list
 
-@router.get("/info_users")
+@router.get("/info_users",summary="Devuelve el numero total de usuarios y su respectivo rol")
 async def info_users(db: session):
     """ Devulve el numero de usuarios totales y por roles """
     Total_users = len(db.exec(select(User.id)).all())
@@ -30,7 +30,7 @@ async def info_users(db: session):
         "workes": Total_workers
     },status_code=200)
     
-@router.get("/list_report_user")
+@router.get("/list_report_user",summary="Devuelve los reportes de cada usuario")
 async def list_reports_user(db: session, user_id: int):
     """Devuelve todos los reportes de un usuario con el id proporcionado"""
     
@@ -54,7 +54,7 @@ async def list_reports_user(db: session, user_id: int):
 
     return JSONResponse(content={"data": clean_data}, status_code=200)
 
-@router.get("/list_cronograma_user")
+@router.get("/list_cronograma_user",summary="Devuelve los cronogramas de cada usuario")
 async def list_reports_user(db: session, user_id: int):
     """Devuelve todos los cronograma de un usuario con el id proporcionado"""
     
@@ -76,7 +76,7 @@ async def list_reports_user(db: session, user_id: int):
             
     return JSONResponse(content={"data": clean_data}, status_code=200)
 
-@router.get("/list_all_reports")
+@router.get("/list_all_reports",summary="Devuelve todos los reportes de la base de datos")
 async def list_all_reports(db:session):
     """ Lista todos los reportes que estan en la base de datos """
     
@@ -100,7 +100,7 @@ async def list_all_reports(db:session):
             
     return JSONResponse(content={"data": clean_data}, status_code=200)
 
-@router.get("/list_all_cronogramas")
+@router.get("/list_all_cronogramas",summary="lista todos los cronogramas de la base de datos")
 async def list_all_cronogramas(db: session):
     """Devuelve todos los cronograma"""
     
@@ -122,7 +122,7 @@ async def list_all_cronogramas(db: session):
             
     return JSONResponse(content={"data": clean_data}, status_code=200)
     
-@router.get("/logout")
+@router.get("/logout",summary="Cierra la session del usuario borrando la cookie")
 async def logout(response: Response):
     """ Cierra sesion y elimina el token de acceso """
     response = JSONResponse(content={
@@ -131,7 +131,7 @@ async def logout(response: Response):
     response.delete_cookie("access_token", path="/")
     return response
 
-@router.get("/user_personal_data",response_model=PersonalData)
+@router.get("/user_personal_data",response_model=PersonalData,summary="Devuelve la informacion personal de cada usuario")
 async def personal_data(db:session,id:int):
     """ Devuelve la informacion basica del usuario """
     # Definimos lo que queremos obtener del usuario
