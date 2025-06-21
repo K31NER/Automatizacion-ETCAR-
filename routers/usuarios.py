@@ -1,5 +1,6 @@
 from schemas.user import * 
 from utils.emails import *
+from utils.clean_data import *
 from utils.credential import *
 from utils.manage_users import *
 from db.db_config import session 
@@ -150,6 +151,15 @@ async def delete_user(db: session,worker_id: int,user:dict = Depends(required_ad
     if worker.cargo == "Administrador":
         return JSONResponse(status_code=403, content={"detail": f"No se puede eliminar a un administrador"})
     
+    # Guardamos los registros del usuario eliminado antes de borrar
+    await save_info_worker(db,worker_id,worker.nombre,worker.correo)
+    
+    # Borramos sus registros
+    for crono in worker.cronogramas:
+        db.delete(crono)
+    for reporte in worker.reportes:
+        db.delete(reporte)
+        
     # Borramos al trabajador
     db.delete(worker)
     db.commit()
@@ -157,6 +167,7 @@ async def delete_user(db: session,worker_id: int,user:dict = Depends(required_ad
     # Le notificamos por correo
     await enviar_correo_eliminacion(username=worker.nombre,destinario=worker.correo)
     
+    # Mostramos un mensaje
     return JSONResponse(content={
         "message" : f"El trabajador {worker.nombre} con id {worker.id} fue eliminado correctamente"
     })

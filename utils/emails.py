@@ -26,7 +26,7 @@ async def enviar_correo_creacion(data:dict,destinario:str):
     
     user_email, user_password,username = data.get("email"), data.get("password"),data.get("username")
     
-    with open("templates/email_welcome.html", "r", encoding="utf-8") as file:
+    with open("Emails/email_welcome.html", "r", encoding="utf-8") as file:
         html_content = file.read()
         
     # Reemplazar placeholders
@@ -51,7 +51,7 @@ async def enviar_correo_eliminacion(username,destinario:str):
     """ Envia un correo para notificar de eliminacion de cuenta"""
     
     #leemos el html
-    with open("templates/email_farewell.html", "r", encoding="utf-8") as file:
+    with open("Emails/email_farewell.html", "r", encoding="utf-8") as file:
         html_content = file.read()
         
     # Reemplazar placeholders
