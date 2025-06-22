@@ -25,7 +25,7 @@ async def login(response: Response, db: session ,data: User_login):
         raise HTTPException(status_code=404,detail="Credenciales invalidas")
     
     # Creamos el token
-    token_data = {"sub":user.nombre, "id": user.id ,"role": user.cargo}
+    token_data = {"sub":user.nombre, "id": user.id ,"rol": user.cargo}
     token = create_token(token_data)
     # Preparamos un json para devolver datos relevantes
     response = JSONResponse(content={
@@ -33,7 +33,7 @@ async def login(response: Response, db: session ,data: User_login):
         "user": {
             "id": user.id,
             "nombre": user.nombre,
-            "role": user.cargo
+            "rol": user.cargo
         }
     })
     
@@ -92,7 +92,8 @@ async def update_profile(db: session,
                 name: Optional[str] = Form(None),
                 email: Optional[str] = Form(None),
                 password: Optional[str] = Form(None), 
-                firma: Optional[UploadFile] = File(None)):
+                firma: Optional[UploadFile] = File(None),
+                current_user: dict = Depends(get_current_user)):
     """ Actualiza la informacion de los usuarios"""
     
     # Obtenemos el usuario
@@ -102,25 +103,39 @@ async def update_profile(db: session,
     if not user or user is None :
         return JSONResponse(status_code=404, content={"detail": f"No se encontró el usuario con id: {user_id}"})
     try: 
+        
+        # Definimos variables por si se cambia la contraseña o la firma
+        cambio_password = False
+        cambio_firma = False
+        
         # Solo actualiza lo que realmente cambió
         if name is not None:
             user.nombre = name
 
         if email is not None:
-            user.correo = email
+            if current_user.get("rol") == "Administrador":
+                user.correo = email
+            else:
+                raise HTTPException(status_code=403, detail="Solo un administrador puede cambiar el correo electrónico.")
 
         if password is not None:
             user.contraseña = hased_password(password) 
+            cambio_password = True
             
         if firma is not None:
             firma_content = await validar_tipo_archivo(firma)
             user.firma = firma_content
+            cambio_firma = True
         
         # Guardamos los cambios en la base de datos
         db.add(user)
         db.commit()
         db.refresh(user)
         
+        # Enviamos el correo
+        if cambio_firma or cambio_password:
+            await enviar_correo_actualizacion(user.nombre,user.correo)
+            
         return {
         "message": "Perfil actualizado exitosamente",
         "user": {
@@ -129,6 +144,7 @@ async def update_profile(db: session,
             "correo": user.correo
             }
         }
+        
     except Exception as e:
         raise HTTPException(status_code=500,detail=f"Error al actualizar datos: {e}")
 

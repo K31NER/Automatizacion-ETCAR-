@@ -20,9 +20,9 @@ async def dashboard(request:Request, user:dict = Depends(get_current_user)):
     
     user_id = user.get("id")
     user_name = user.get("sub")
-    user_role = user.get("role")
+    user_rol = user.get("rol")
     
-    if not user_id or not user_name or not user_role:
+    if not user_id or not user_name or not user_rol:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="No tienes acceso autorizado a esta página"
@@ -31,7 +31,7 @@ async def dashboard(request:Request, user:dict = Depends(get_current_user)):
         "request": request,
         "id":user_id ,
         "username": user_name,
-        "rol": user_role
+        "rol": user_rol
     })
 
     
@@ -39,9 +39,9 @@ async def dashboard(request:Request, user:dict = Depends(get_current_user)):
 async def reporte(request:Request,user:dict = Depends(get_current_user)):
     user_id = user.get("id")
     user_name = user.get("sub")
-    user_role = user.get("role")
+    user_rol = user.get("rol")
     
-    if not user_id or not user_name or not user_role:
+    if not user_id or not user_name or not user_rol:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="No tienes acceso autorizado a esta página"
@@ -50,7 +50,7 @@ async def reporte(request:Request,user:dict = Depends(get_current_user)):
         "request": request,
         "id":user_id,
         "username": user_name,
-        "rol": user_role
+        "rol": user_rol
     })
 
 
@@ -58,9 +58,9 @@ async def reporte(request:Request,user:dict = Depends(get_current_user)):
 async def cronograma(request:Request,user:dict = Depends(get_current_user)):
     user_id = user.get("id")
     user_name = user.get("sub")
-    user_role = user.get("role")
+    user_rol = user.get("rol")
     
-    if not user_id or not user_name or not user_role:
+    if not user_id or not user_name or not user_rol:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="No tienes acceso autorizado a esta página"
@@ -70,17 +70,17 @@ async def cronograma(request:Request,user:dict = Depends(get_current_user)):
         "request": request,
         "id":user_id,
         "username": user_name,
-        "rol": user_role
+        "rol": user_rol
     })
 
 @router.get("/admin",response_class=HTMLResponse)
 async def admin(request:Request,user:dict = Depends(required_admin)):
     user_id = user.get("id")
     user_name = user.get("sub")
-    user_role = user.get("role")
+    user_rol = user.get("rol")
     
     print(user)
-    if not user_id or not user_name or not user_role:
+    if not user_id or not user_name or not user_rol:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="No tienes acceso autorizado a esta página"
@@ -91,6 +91,6 @@ async def admin(request:Request,user:dict = Depends(required_admin)):
         "request":request,
         "admin_id": user_id,
         "username": user_name,
-        "rol": user_role
+        "rol": user_rol
     })
 

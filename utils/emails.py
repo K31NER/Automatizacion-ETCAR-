@@ -68,3 +68,26 @@ async def enviar_correo_eliminacion(username,destinario:str):
     # Enviamos el mensaje
     fm = FastMail(config=conf)
     await fm.send_message(mensaje)
+    
+
+async def enviar_correo_actualizacion(username,destinario:str):
+    """ Envia un correo para notificar al usuario que se actualizaron sus datos de manera correcta"""
+    
+    #leemos el html
+    with open("Emails/email_update.html", "r", encoding="utf-8") as file:
+        html_content = file.read()
+        
+    # Reemplazar placeholders
+    html_content = html_content.replace("{{username}}", username)
+    
+    # Definimos el mensaje
+    mensaje = MessageSchema(
+        subject=f"Actualizacion de credenciales",
+        recipients=[destinario],
+        body=html_content,
+        subtype="html"
+    )
+    
+    # Enviamos el mensaje
+    fm = FastMail(config=conf)
+    await fm.send_message(mensaje)

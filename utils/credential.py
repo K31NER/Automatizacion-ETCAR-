@@ -56,20 +56,20 @@ async def get_current_user(request: Request):
         payload = validate_token(token)
         username: str = payload.get("sub")
         user_id: str = payload.get("id")
-        role: str = payload.get("role")
+        rol: str = payload.get("rol")
         
-        if username is None or user_id is None or role is None:
+        if username is None or user_id is None or rol is None:
             raise credentials_exception
         
     except JWTError:
         raise credentials_exception
     
-    return {"sub": username, "id": user_id, "role": role}
+    return {"sub": username, "id": user_id, "rol": rol}
 
 def required_admin(current_user: dict = Depends(get_current_user)) -> dict :
     """ Validar el rol de administrador """
     
-    if current_user.get("role") != "Administrador":
+    if current_user.get("rol") != "Administrador":
         raise HTTPException(
             status_code=403,
             detail="Acceso no autorizado"
