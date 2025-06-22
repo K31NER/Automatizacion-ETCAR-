@@ -606,11 +606,10 @@
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
                     <input id="profileName" name="name" type="text" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"/>
-                </div>
-                <div class="mb-4">
+                </div>                <!-- <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Correo</label>
                     <input id="profileEmail" name="email" type="email" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"/>
-                </div>
+                </div> -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nueva Contraseña (opcional)</label>
                     <input id="profilePassword" name="password" type="password" placeholder="Dejar vacío para no cambiar" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"/>
@@ -1076,46 +1075,18 @@
         }        function closeDeleteModal() {
             document.getElementById('deleteModal').classList.add('hidden');
         }
-        
-        // Funciones del modal de perfil
-        async function openProfileModal() {
-            const userId = getUserId();
-            if (!userId) {
-                showToast('Error: No se pudo obtener el ID del usuario', 'error');
-                return;
-            }
-            
-            try {
-                // Obtener datos actuales del usuario
-                const response = await fetch(`/user_personal_data?id=${userId}`);
-                if (response.ok) {
-                    const userData = await response.json();
-                    
-                    // Llenar el formulario con los datos actuales
-                    document.getElementById('profileName').value = userData.nombre || '';
-                    document.getElementById('profileEmail').value = userData.correo || '';
-                    document.getElementById('profilePassword').value = '';
-                    document.getElementById('profileSignature').value = '';
-                    
-                    // Mostrar el modal
-                    document.getElementById('profileModal').classList.remove('hidden');
-                } else {
-                    showToast('Error al cargar los datos del usuario', 'error');
-                }
-            } catch (error) {
-                showToast('Error de conexión al cargar datos', 'error');
-            }
-        }
-          function closeProfileModal() {
-            document.getElementById('profileModal').classList.add('hidden');            // Limpiar el formulario
+          // Funciones del modal de perfil
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+            // Limpiar el formulario
             document.getElementById('profileForm').reset();
         }
-          // Función mejorada para abrir el modal del perfil
+        
+        // Función para abrir el modal del perfil
         async function openProfileModal() {
             try {
                 // Obtener el ID del usuario actual
                 const userId = getUserId();
-                console.log('User ID obtenido:', userId);
                 
                 if (!userId) {
                     showToast('Error: No se pudo obtener el ID del usuario', 'error');
@@ -1123,17 +1094,15 @@
                 }
                 
                 // Obtener datos actuales del usuario
-                console.log('Haciendo fetch a:', `/user_personal_data?id=${userId}`);
                 const response = await fetch(`/user_personal_data?id=${userId}`);
-                console.log('Response status:', response.status);
                 
                 if (response.ok) {
                     const userData = await response.json();
-                    console.log('Datos del usuario recibidos:', userData);
                     
                     // Llenar el formulario con los datos actuales
                     document.getElementById('profileName').value = userData.nombre || '';
-                    document.getElementById('profileEmail').value = userData.correo || '';
+                    // Comentamos el email para que no se pueda editar
+                    // document.getElementById('profileEmail').value = userData.correo || '';
                     document.getElementById('profilePassword').value = '';
                     document.getElementById('profileSignature').value = '';
                     
@@ -1141,13 +1110,12 @@
                     document.getElementById('profileModal').dataset.userId = userId;
                     
                     // Mostrar el modal
-                    document.getElementById('profileModal').classList.remove('hidden');                } else {
+                    document.getElementById('profileModal').classList.remove('hidden');
+                } else {
                     const errorData = await response.json();
-                    console.log('Error en response:', errorData);
                     showToast(errorData.detail || 'Error al cargar los datos del usuario', 'error');
                 }
             } catch (error) {
-                console.error('Error en openProfileModal:', error);
                 showToast('Error de conexión al cargar datos', 'error');
             }
         }
@@ -1168,22 +1136,19 @@
             }
             
             const formData = new FormData();
-            
-            // Solo agregar campos que tienen valor
+              // Solo agregar campos que tienen valor
             const name = document.getElementById('profileName').value.trim();
-            const email = document.getElementById('profileEmail').value.trim();
             const password = document.getElementById('profilePassword').value.trim();
             const signature = document.getElementById('profileSignature').files[0];
             
             // Validar que al menos un campo tenga datos
-            if (!name && !email && !password && !signature) {
+            if (!name && !password && !signature) {
                 showToast('Debe modificar al menos un campo para actualizar', 'error');
                 return;
             }
             
-            // No agregamos user_id al FormData, se pasa como parámetro en la URL
+            // Agregar campos al FormData solo si tienen valor
             if (name) formData.append('name', name);
-            if (email) formData.append('email', email);
             if (password) formData.append('password', password);
             if (signature) formData.append('firma', signature);
               try {

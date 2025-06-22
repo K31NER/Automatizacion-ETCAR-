@@ -43,4 +43,4 @@ def validate_user(db:session,email:str,password:str) -> User:
 def random_password()-> str:
     """ Genera una contraseña aleatoria para los nuevos usuarios """
     
-    return  ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(8))
+    return  ''.join(secrets.choice(string.ascii_lowercase + string.digits) for i in range(8))

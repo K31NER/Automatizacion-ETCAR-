@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil actualizado - Notificación de seguridad</title>
+    <style>        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #14532d 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }        .header {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 8px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        .content {
+            padding: 30px 20px;
+            text-align: center;
+        }        .farewell-title {
+            color: #1f2937;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .farewell-text {
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+        .success-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success-message {
+            color: #166534;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .success-detail {
+            color: #15803d;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .warning-message {
+            color: #d97706;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .warning-detail {
+            color: #b45309;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .footer {
+            background: #f9fafb;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer-text {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }        .system-name {
+            color: #16a34a;
+            font-weight: 600;
+        }
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #0c4a6e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <!-- LOGO
+            <div class="logo">
+            </div>
+            -->            <h1 style="margin: 0; font-size: 28px;">✅ Perfil Actualizado</h1>
+            <p style="margin: 5px 0 0; font-size: 14px; opacity: 0.9;">Sistema de Automatización Industrial</p>
+        </div>        <!-- Content -->
+        <div class="content">
+            <h2 class="farewell-title">Hola {{username}}</h2>
+            <p class="farewell-text">
+                Te informamos que tu perfil en el sistema ha sido actualizado exitosamente.
+            </p>
+
+            <div class="success-box">
+                <div class="success-message">
+                    ✅ Actualización completada
+                </div>
+                <div class="success-detail">
+                    Los cambios en tu perfil han sido guardados y están activos desde este momento.
+                    Puedes acceder al sistema normalmente con tus nuevas configuraciones.
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <div class="warning-message">
+                    ⚠️ Aviso de seguridad importante
+                </div>
+                <div class="warning-detail">
+                    <strong>¿No realizaste esta actualización?</strong><br>
+                    Si no fuiste tú quien modificó estos datos, tu cuenta podría estar comprometida. 
+                    Por favor, contacta inmediatamente a nuestro equipo de soporte en:
+                    <br><br>
+                    📧 <strong>soporte@reportes-industriales.com</strong>
+                    <br>
+                    📞 <strong>+57 123456789</strong>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong> Recomendaciones de seguridad:</strong> Mantén tu contraseña segura, 
+                no la compartas con nadie y cierra sesión al terminar de usar el sistema.
+            </div>
+        </div>        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">
+                Gracias por mantener tu información actualizada en nuestro sistema.
+            </p>
+            <p class="footer-text">
+                Atentamente, <span class="system-name">Equipo de Automatización Industrial</span>
+            </p>
+            <p class="footer-text" style="margin: 0; font-size: 12px;">
+                Este es un mensaje automático, por favor no responder a este correo.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

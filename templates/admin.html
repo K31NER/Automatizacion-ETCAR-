@@ -722,7 +722,7 @@
                                             Rol del Usuario
                                         </span>
                                     </label>
-                                    <select id="role" name="role" required class="form-input mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                    <select id="role" name="rol" required class="form-input mt-1 block w-full px-4 py-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
                                         <option value="">Seleccionar rol</option>
                                         <option value="Trabajador">👷 Trabajador</option>
                                         <option value="Administrador">👨‍💼 Administrador</option>
@@ -1399,7 +1399,7 @@
             const formData = new FormData(registerUserForm);
             const mappedFormData = new FormData();
             mappedFormData.append('name', formData.get('fullName'));
-            mappedFormData.append('rol', formData.get('role'));
+            mappedFormData.append('rol', formData.get('rol'));
             mappedFormData.append('email', formData.get('email'));
             mappedFormData.append('password', formData.get('password'));
             if (formData.get('signature') && formData.get('signature').size > 0) {
