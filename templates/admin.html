@@ -904,7 +904,7 @@
         <div class="modal-content max-w-md">
             <div class="flex items-center mb-6">
                 <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mr-4">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v6m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5zM10 13a1 1 0 110-2 1 1 0 010 2zm-1.75-2.75a.75.75 0 000 1.5h3.5a.75.75 0 000-1.5h-3.5z" clip-rule="evenodd"></path></svg>
                 </div>
                 <div>
                     <h4 class="text-xl font-bold text-gray-800">Confirmar Eliminación</h4>
@@ -927,6 +927,57 @@
                     Eliminar Usuario
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Usuario -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content max-w-md">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mr-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold text-gray-800">Editar Usuario</h4>
+                    <p class="text-gray-600 text-sm">Actualizar información del usuario</p>
+                </div>
+                <button id="closeEditUserModal" class="text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100 rounded-lg transition-colors ml-auto">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form id="editUserForm" enctype="multipart/form-data" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                    <input id="editUserName" name="name" type="text" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"/>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                    <input id="editUserEmail" name="email" type="email" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"/>
+                    <p class="text-xs text-gray-500 mt-1">Solo administradores pueden cambiar el correo</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nueva Contraseña (opcional)</label>
+                    <input id="editUserPassword" name="password" type="password" placeholder="Dejar vacío para no cambiar" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"/>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nueva Firma (opcional)</label>
+                    <input id="editUserSignature" name="firma" type="file" accept="image/*" class="form-input mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"/>
+                    <p class="text-xs text-gray-500 mt-1">Dejar vacío para no cambiar la firma actual</p>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancelEditUser" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg focus:outline-none transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="saveEditUser" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none transition-colors">
+                        Actualizar Usuario
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1123,6 +1174,10 @@
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                     Ver Detalles
                                 </button>
+                                <button data-userid="${user.id}" data-username="${user.nombre}" data-useremail="${user.correo}" class="edit-user-btn inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                    Editar
+                                </button>
                                 ${user.cargo !== 'Administrador' ? `
                                 <button data-userid="${user.id}" data-username="${user.nombre}" class="delete-user-btn inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -1137,6 +1192,13 @@
                 document.querySelectorAll('.view-details-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         openUserDetailsModal(parseInt(this.dataset.userid));
+                    });
+                });
+                
+                // Asignar evento a los botones de editar usuario
+                document.querySelectorAll('.edit-user-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        openEditUserModal(parseInt(this.dataset.userid), this.dataset.username, this.dataset.useremail);
                     });
                 });
                 
@@ -1644,6 +1706,122 @@
             userDetailsModal.addEventListener('mousedown', (e) => {
                 if (e.target === userDetailsModal) {
                     userDetailsModal.classList.remove('active');
+                }
+            });
+        }
+
+        // --- FUNCIONES PARA EL MODAL DE EDITAR USUARIO ---
+        const editUserModal = document.getElementById('editUserModal');
+        const editUserForm = document.getElementById('editUserForm');
+        const closeEditUserModal = document.getElementById('closeEditUserModal');
+        const cancelEditUser = document.getElementById('cancelEditUser');
+        let userToEdit = null;
+
+        async function openEditUserModal(userId, userName, userEmail) {
+            try {
+                // Obtener datos actuales del usuario
+                const response = await fetch(`/user_personal_data?id=${userId}`);
+                if (response.ok) {
+                    const userData = await response.json();
+                    
+                    // Llenar el formulario con los datos actuales
+                    document.getElementById('editUserName').value = userData.nombre || '';
+                    document.getElementById('editUserEmail').value = userData.correo || '';
+                    document.getElementById('editUserPassword').value = '';
+                    document.getElementById('editUserSignature').value = '';
+                    
+                    // Guardar referencia del usuario a editar
+                    userToEdit = { id: userId, name: userName, email: userEmail };
+                    
+                    // Mostrar el modal
+                    editUserModal.classList.add('active');
+                } else {
+                    showToast('Error al cargar los datos del usuario', 'error');
+                }
+            } catch (error) {
+                showToast('Error de conexión al cargar datos', 'error');
+            }
+        }
+
+        // Cerrar modal de edición
+        function closeEditUserModalFunction() {
+            editUserModal.classList.remove('active');
+            editUserForm.reset();
+            userToEdit = null;
+        }
+
+        if (closeEditUserModal) {
+            closeEditUserModal.addEventListener('click', closeEditUserModalFunction);
+        }
+
+        if (cancelEditUser) {
+            cancelEditUser.addEventListener('click', closeEditUserModalFunction);
+        }
+
+        // Manejar envío del formulario de edición
+        if (editUserForm) {
+            editUserForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!userToEdit) {
+                    showToast('Error: No se pudo obtener el usuario a editar', 'error');
+                    return;
+                }
+
+                const formData = new FormData();
+                
+                // Obtener valores del formulario
+                const name = document.getElementById('editUserName').value.trim();
+                const email = document.getElementById('editUserEmail').value.trim();
+                const password = document.getElementById('editUserPassword').value.trim();
+                const signature = document.getElementById('editUserSignature').files[0];
+
+                // Validar que al menos un campo tenga datos
+                if (!name && !email && !password && !signature) {
+                    showToast('Debe modificar al menos un campo para actualizar', 'error');
+                    return;
+                }
+
+                // Agregar campos al FormData solo si tienen valor
+                if (name) formData.append('name', name);
+                if (email) formData.append('email', email);
+                if (password) formData.append('password', password);
+                if (signature) formData.append('firma', signature);
+
+                try {
+                    // Deshabilitar el botón mientras se envía
+                    const saveBtn = document.getElementById('saveEditUser');
+                    const originalText = saveBtn.textContent;
+                    saveBtn.disabled = true;
+                    saveBtn.textContent = 'Actualizando...';
+
+                    const response = await fetch(`/update_profile?user_id=${userToEdit.id}`, {
+                        method: 'PATCH',
+                        body: formData,
+                        credentials: 'include'
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        showToast('Usuario actualizado exitosamente', 'success');
+                        closeEditUserModalFunction();
+                        
+                        // Refrescar la tabla de usuarios
+                        renderUsersTable();
+                    } else {
+                        const errorData = await response.json();
+                        showToast(errorData.detail || 'Error al actualizar el usuario', 'error');
+                    }
+
+                    // Rehabilitar el botón
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = originalText;
+                } catch (error) {
+                    showToast('Error de conexión', 'error');
+                    // Rehabilitar el botón en caso de error
+                    const saveBtn = document.getElementById('saveEditUser');
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Actualizar Usuario';
                 }
             });
         }
